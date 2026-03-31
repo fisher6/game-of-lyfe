@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "nodes": {
     "start_age_8": {
       "id": "start_age_8",
@@ -10,22 +10,29 @@
           "id": "library",
           "label": "Hide in the library with a stack of books",
           "nextNodeId": "age_12_school",
-          "deltas": { "happiness": 6, "health": -1 },
+          "deltas": { "happiness": 6, "health": -1, "intelligence": 6 },
           "flagsAdd": ["bookworm"]
         },
         {
           "id": "playground",
           "label": "Race friends until the streetlights buzz on",
           "nextNodeId": "age_12_school",
-          "deltas": { "health": 5, "happiness": 4 },
+          "deltas": { "health": 5, "happiness": 4, "intelligence": 1 },
           "flagsAdd": ["social_kid"]
         },
         {
           "id": "games",
           "label": "Figure out games on the old family computer",
           "nextNodeId": "age_12_school",
-          "deltas": { "happiness": 5, "health": -2 },
+          "deltas": { "happiness": 5, "health": -2, "intelligence": 3 },
           "flagsAdd": ["tech_curious"]
+        },
+        {
+          "id": "phone_early",
+          "label": "Beg for a phone and get lost in feeds and quick videos",
+          "nextNodeId": "age_12_school",
+          "deltas": { "happiness": 10, "health": -2, "intelligence": -10 },
+          "flagsAdd": ["early_social"]
         }
       ]
     },
@@ -39,21 +46,21 @@
           "id": "stem_club",
           "label": "Join the robotics club and lose sleep over a motor",
           "nextNodeId": "teen_15",
-          "deltas": { "happiness": 4, "health": -3, "money": -20 },
+          "deltas": { "happiness": 4, "health": -3, "money": -20, "intelligence": 8 },
           "flagsAdd": ["stem_track"]
         },
         {
           "id": "arts",
           "label": "Say yes to theater crew — heavy boxes, big laughs",
           "nextNodeId": "teen_15",
-          "deltas": { "happiness": 8, "health": -1 },
+          "deltas": { "happiness": 8, "health": -1, "intelligence": 4 },
           "flagsAdd": ["creative_track"]
         },
         {
           "id": "sports",
           "label": "Try a team sport even though you're nervous",
           "nextNodeId": "teen_15",
-          "deltas": { "health": 8, "happiness": 5, "money": -40 },
+          "deltas": { "health": 8, "happiness": 5, "money": -40, "intelligence": 2 },
           "flagsAdd": ["athlete_track"]
         }
       ]
@@ -68,19 +75,25 @@
           "id": "limit_scroll",
           "label": "Mute a few feeds and pick one real hobby instead",
           "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": 5, "health": 3 }
+          "deltas": { "happiness": 5, "health": 3, "intelligence": 5 }
         },
         {
           "id": "post_more",
           "label": "Post constantly — maybe the likes will feel like friends",
           "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": -6, "health": -4 }
+          "deltas": { "happiness": -6, "health": -4, "intelligence": -12 }
+        },
+        {
+          "id": "doomscroll",
+          "label": "Install every trending app and scroll until your eyes burn",
+          "nextNodeId": "social_media_beat",
+          "deltas": { "happiness": 4, "health": -6, "intelligence": -14, "money": -15 }
         },
         {
           "id": "side_project",
           "label": "Start a tiny online project (stickers, tips, silly videos)",
           "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": 3, "money": 80, "health": -2 },
+          "deltas": { "happiness": 3, "money": 80, "health": -2, "intelligence": 2 },
           "flagsAdd": ["side_hustle"]
         }
       ]
@@ -94,41 +107,41 @@
           "id": "research",
           "label": "Research seriously: compare college, work, and trade school",
           "nextNodeId": "young_adult_fork",
-          "deltas": { "happiness": 2 }
+          "deltas": { "happiness": 2, "intelligence": 6 }
         },
         {
           "id": "ignore",
           "label": "Close the tab and pretend adulthood is far away",
           "nextNodeId": "young_adult_fork",
-          "deltas": { "happiness": -2, "health": 2 }
+          "deltas": { "happiness": -2, "health": 2, "intelligence": -4 }
         }
       ]
     },
     "young_adult_fork": {
       "id": "young_adult_fork",
       "title": "Almost grown",
-      "body": "You're rounding eighteen. People you trust disagree about what \"smart\" looks like. Money is real now: rent someday, loans, or paychecks. What do you lean toward first?",
+      "body": "You're rounding eighteen. People you trust disagree about what \"smart\" looks like. Money is real now: rent someday, loans, or paychecks. College costs a lot up front, but it can sharpen your mind for years after.",
       "onEnter": { "ageDelta": 3 },
       "choices": [
         {
           "id": "college",
-          "label": "Apply to college — loans, roommates, late-night study",
+          "label": "Apply to college — big loans, roommates, brutal reading lists",
           "nextNodeId": "ending_college",
-          "deltas": { "happiness": 4, "health": -5, "money": -500 },
+          "deltas": { "happiness": 4, "health": -5, "money": -650, "intelligence": 20 },
           "flagsAdd": ["chose_college"]
         },
         {
           "id": "work",
           "label": "Skip degree for now and take a full-time job",
           "nextNodeId": "ending_work",
-          "deltas": { "money": 200, "happiness": -2, "health": -4 },
+          "deltas": { "money": 200, "happiness": -2, "health": -4, "intelligence": 3 },
           "flagsAdd": ["chose_work"]
         },
         {
           "id": "gap",
           "label": "Gap year: work part-time and travel cheap",
           "nextNodeId": "ending_gap",
-          "deltas": { "happiness": 10, "money": -150, "health": 4 },
+          "deltas": { "happiness": 10, "money": -150, "health": 4, "intelligence": 5 },
           "flagsAdd": ["gap_year"]
         }
       ]

@@ -101,6 +101,7 @@ export function GameShell({ initialState }: GameShellProps) {
       <StatBars
         health={state.health}
         happiness={state.happiness}
+        intelligence={state.intelligence}
         money={state.money}
         age={state.age}
       />

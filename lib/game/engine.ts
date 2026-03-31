@@ -8,20 +8,44 @@ function clamp(n: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, n));
 }
 
+/** Smarter characters gain a little health, mood, and income each time they age up. */
+function applyIntelligenceLifestyleBonus(state: GameState): GameState {
+  const i = state.intelligence;
+  const healthNudge = Math.floor(i / 28);
+  const happyNudge = Math.floor(i / 32);
+  const moneyNudge = Math.floor(i / 22) * 20;
+  return {
+    ...state,
+    health: clamp(state.health + healthNudge, MIN_STAT, MAX_STAT),
+    happiness: clamp(state.happiness + happyNudge, MIN_STAT, MAX_STAT),
+    money: state.money + moneyNudge,
+  };
+}
+
 function applyDelta(state: GameState, d: StatDelta | undefined): GameState {
   if (!d) return state;
-  let { age, health, happiness, money } = state;
+  let { age, health, happiness, intelligence, money } = state;
   if (d.health !== undefined) health += d.health;
   if (d.happiness !== undefined) happiness += d.happiness;
   if (d.money !== undefined) money += d.money;
+  if (d.intelligence !== undefined) intelligence += d.intelligence;
+  const ageBefore = age;
   if (d.ageDelta !== undefined) age += d.ageDelta;
-  return {
+
+  let next: GameState = {
     ...state,
     age,
     health: clamp(health, MIN_STAT, MAX_STAT),
     happiness: clamp(happiness, MIN_STAT, MAX_STAT),
+    intelligence: clamp(intelligence, MIN_STAT, MAX_STAT),
     money,
   };
+
+  if (d.ageDelta !== undefined && d.ageDelta > 0 && age > ageBefore) {
+    next = applyIntelligenceLifestyleBonus(next);
+  }
+
+  return next;
 }
 
 function mergeFlags(flags: string[], add: string[] | undefined): string[] {
@@ -36,6 +60,7 @@ export function createInitialState(): GameState {
     age: 8,
     health: 80,
     happiness: 80,
+    intelligence: 72,
     money: 0,
     flags: [],
     currentNodeId: getStartNodeId(),
@@ -77,8 +102,19 @@ export function applyChoice(state: GameState, choiceIndex: number): GameState {
   return applyOnEnterIfNeeded(next);
 }
 
+function migrateLegacyState(state: GameState): GameState {
+  return {
+    ...state,
+    intelligence: clamp(state.intelligence ?? 72, MIN_STAT, MAX_STAT),
+    contentVersion: CONTENT_VERSION,
+  };
+}
+
 export function assertContentVersion(state: GameState): GameState {
   if (state.contentVersion === CONTENT_VERSION) return state;
+  if (state.contentVersion < CONTENT_VERSION) {
+    return migrateLegacyState(state);
+  }
   return createInitialState();
 }
 
@@ -93,10 +129,15 @@ export function validateStateShape(data: unknown): GameState | null {
     return null;
   if (typeof o.currentNodeId !== "string") return null;
   if (typeof o.contentVersion !== "number") return null;
+
+  const intelligence =
+    typeof o.intelligence === "number" ? o.intelligence : 72;
+
   return {
     age: o.age,
     health: o.health,
     happiness: o.happiness,
+    intelligence: clamp(intelligence, MIN_STAT, MAX_STAT),
     money: o.money,
     flags: o.flags as string[],
     currentNodeId: o.currentNodeId,
