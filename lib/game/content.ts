@@ -12,5 +12,5 @@ export function getNode(id: string): LifeNode | undefined {
 }
 
 export function getStartNodeId(): string {
-  return "start_age_8";
+  return "character_setup";
 }

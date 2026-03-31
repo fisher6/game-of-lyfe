@@ -1,6 +1,12 @@
 {
-  "version": 2,
+  "version": 12,
   "nodes": {
+    "character_setup": {
+      "id": "character_setup",
+      "title": "Your story",
+      "body": "What is your name? It doesn't have to be your real name!\n\nPick a look — you'll grow and change as the years go by.",
+      "choices": []
+    },
     "start_age_8": {
       "id": "start_age_8",
       "title": "Age 8",
@@ -9,59 +15,346 @@
         {
           "id": "library",
           "label": "Hide in the library with a stack of books",
-          "nextNodeId": "age_12_school",
-          "deltas": { "happiness": 6, "health": -1, "intelligence": 6 },
-          "flagsAdd": ["bookworm"]
+          "nextNodeId": "year_09",
+          "deltas": {
+            "happiness": 6,
+            "health": -1,
+            "intelligence": 6
+          },
+          "flagsAdd": [
+            "bookworm"
+          ]
         },
         {
           "id": "playground",
           "label": "Race friends until the streetlights buzz on",
-          "nextNodeId": "age_12_school",
-          "deltas": { "health": 5, "happiness": 4, "intelligence": 1 },
-          "flagsAdd": ["social_kid"]
+          "nextNodeId": "year_09",
+          "deltas": {
+            "health": 5,
+            "happiness": 4,
+            "intelligence": 1
+          },
+          "flagsAdd": [
+            "social_kid"
+          ]
         },
         {
           "id": "games",
           "label": "Figure out games on the old family computer",
-          "nextNodeId": "age_12_school",
-          "deltas": { "happiness": 5, "health": -2, "intelligence": 3 },
-          "flagsAdd": ["tech_curious"]
+          "nextNodeId": "year_09",
+          "deltas": {
+            "happiness": 5,
+            "health": -2,
+            "intelligence": 3
+          },
+          "flagsAdd": [
+            "tech_curious"
+          ]
         },
         {
           "id": "phone_early",
           "label": "Beg for a phone and get lost in feeds and quick videos",
-          "nextNodeId": "age_12_school",
-          "deltas": { "happiness": 10, "health": -2, "intelligence": -10 },
-          "flagsAdd": ["early_social"]
+          "nextNodeId": "year_09",
+          "deltas": {
+            "happiness": 10,
+            "health": -2,
+            "intelligence": -10
+          },
+          "flagsAdd": [
+            "early_social"
+          ]
+        }
+      ]
+    },
+    "year_09": {
+      "id": "year_09",
+      "title": "Age 9",
+      "body": "You're nine. Long division shows up and refuses to make sense. Where do you put the extra energy?",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_09_a",
+          "label": "Extra worksheets and flashcards until it clicks",
+          "nextNodeId": "year_10",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": -2,
+            "health": -1
+          }
+        },
+        {
+          "id": "year_09_b",
+          "label": "Bike loops around the block until your legs buzz",
+          "nextNodeId": "year_10",
+          "deltas": {
+            "health": 4,
+            "happiness": 3,
+            "intelligence": -1
+          }
+        },
+        {
+          "id": "year_09_c",
+          "label": "Trade silly jokes at recess and forget half the homework",
+          "nextNodeId": "year_10",
+          "deltas": {
+            "happiness": 5,
+            "intelligence": -2,
+            "assets": -5
+          }
+        }
+      ]
+    },
+    "year_10": {
+      "id": "year_10",
+      "title": "Age 10",
+      "body": "Ten feels like a big round number. Someone says \"double digits\" like it's a promotion. What do you lean into?",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_10_a",
+          "label": "A science fair volcano and glitter everywhere",
+          "nextNodeId": "year_11",
+          "deltas": {
+            "intelligence": 3,
+            "happiness": 3,
+            "health": -2,
+            "assets": -15
+          }
+        },
+        {
+          "id": "year_10_b",
+          "label": "Quiet reading and a secret notebook of stories",
+          "nextNodeId": "year_11",
+          "deltas": {
+            "intelligence": 5,
+            "happiness": 4,
+            "health": 0
+          }
+        },
+        {
+          "id": "year_10_c",
+          "label": "Join pickup games until you're muddy and grinning",
+          "nextNodeId": "year_11",
+          "deltas": {
+            "health": 5,
+            "happiness": 5,
+            "intelligence": 1,
+            "assets": -10
+          }
+        },
+        {
+          "id": "year_10_candy",
+          "label": "Blow allowance on candy and playground trades",
+          "nextNodeId": "year_11",
+          "deltas": {
+            "happiness": 3,
+            "socialSkill": 2,
+            "assets": -12
+          },
+          "flagsAdd": [
+            "spent_on_vice"
+          ]
+        },
+        {
+          "id": "year_10_shoes",
+          "label": "Beg for the sparkly shoes everyone has",
+          "nextNodeId": "year_11",
+          "deltas": {
+            "happiness": 5,
+            "socialSkill": 4,
+            "assets": -38
+          },
+          "flagsAdd": [
+            "spent_on_vice"
+          ]
+        }
+      ]
+    },
+    "year_11": {
+      "id": "year_11",
+      "title": "Age 11",
+      "body": "Eleven is the year adults start asking about \"middle school\" like it's a weather forecast. You practice being older in small ways.",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_11_a",
+          "label": "Organize a closet fundraiser for the class trip",
+          "nextNodeId": "north_star_check_11",
+          "deltas": {
+            "happiness": 4,
+            "intelligence": 3,
+            "health": -1,
+            "assets": 25
+          }
+        },
+        {
+          "id": "year_11_b",
+          "label": "Pretend you don't care and watch cartoons instead",
+          "nextNodeId": "north_star_check_11",
+          "deltas": {
+            "happiness": 2,
+            "intelligence": -3,
+            "health": 1
+          }
+        },
+        {
+          "id": "year_11_c",
+          "label": "Start learning an instrument; your fingers hurt",
+          "nextNodeId": "north_star_check_11",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": 2,
+            "health": -1,
+            "assets": -30
+          }
         }
       ]
     },
     "age_12_school": {
       "id": "age_12_school",
-      "title": "Middle school",
+      "title": "Age 12",
       "body": "You turn twelve. Teachers talk about \"paths\" like you are already on a train track. You pick something to care about hard enough that lunch conversations change.",
-      "onEnter": { "ageDelta": 4 },
+      "onEnter": {
+        "ageDelta": 1
+      },
       "choices": [
         {
           "id": "stem_club",
           "label": "Join the robotics club and lose sleep over a motor",
-          "nextNodeId": "teen_15",
-          "deltas": { "happiness": 4, "health": -3, "money": -20, "intelligence": 8 },
-          "flagsAdd": ["stem_track"]
+          "nextNodeId": "year_13",
+          "deltas": {
+            "happiness": 4,
+            "health": -3,
+            "intelligence": 8,
+            "assets": -20
+          },
+          "flagsAdd": [
+            "stem_track"
+          ]
         },
         {
           "id": "arts",
           "label": "Say yes to theater crew — heavy boxes, big laughs",
-          "nextNodeId": "teen_15",
-          "deltas": { "happiness": 8, "health": -1, "intelligence": 4 },
-          "flagsAdd": ["creative_track"]
+          "nextNodeId": "year_13",
+          "deltas": {
+            "happiness": 8,
+            "health": -1,
+            "intelligence": 4
+          },
+          "flagsAdd": [
+            "creative_track"
+          ]
         },
         {
           "id": "sports",
           "label": "Try a team sport even though you're nervous",
+          "nextNodeId": "year_13",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "deltas": {
+            "health": 8,
+            "happiness": 5,
+            "intelligence": 2,
+            "assets": -40,
+            "heightInches": 0.35,
+            "weightLbs": -1.5
+          },
+          "flagsAdd": [
+            "athlete_track"
+          ]
+        }
+      ]
+    },
+    "year_13": {
+      "id": "year_13",
+      "title": "Age 13",
+      "body": "Thirteen arrives with weird voice cracks or awkward silences. Group chats splinter. You pick a lane for the year.",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_13_a",
+          "label": "Study streaks and honor roll energy",
+          "nextNodeId": "year_14",
+          "deltas": {
+            "intelligence": 5,
+            "happiness": -1,
+            "health": -2
+          }
+        },
+        {
+          "id": "year_13_b",
+          "label": "Skate park, scraped knees, new playlists",
+          "nextNodeId": "year_14",
+          "deltas": {
+            "health": 4,
+            "happiness": 6,
+            "intelligence": -1,
+            "assets": -12
+          }
+        },
+        {
+          "id": "year_13_c",
+          "label": "Part-time help at a family friend's shop",
+          "nextNodeId": "year_14",
+          "deltas": {
+            "happiness": 2,
+            "health": -1,
+            "intelligence": 2,
+            "assets": 45
+          }
+        }
+      ]
+    },
+    "year_14": {
+      "id": "year_14",
+      "title": "Age 14",
+      "body": "Fourteen: high school looms on the calendar. You can taste both freedom and pressure. What's your move?",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_14_a",
+          "label": "Map out classes like a general planning a campaign",
           "nextNodeId": "teen_15",
-          "deltas": { "health": 8, "happiness": 5, "money": -40, "intelligence": 2 },
-          "flagsAdd": ["athlete_track"]
+          "deltas": {
+            "intelligence": 4,
+            "happiness": -2,
+            "health": -1
+          }
+        },
+        {
+          "id": "year_14_b",
+          "label": "Say yes to every invite until you're exhausted",
+          "nextNodeId": "teen_15",
+          "deltas": {
+            "happiness": 7,
+            "health": -4,
+            "intelligence": -2,
+            "assets": -35
+          }
+        },
+        {
+          "id": "year_14_c",
+          "label": "Train for something physical — miles or mats",
+          "nextNodeId": "teen_15",
+          "deltas": {
+            "health": 6,
+            "happiness": 3,
+            "intelligence": 1,
+            "assets": -18,
+            "heightInches": 0.2,
+            "weightLbs": -0.8
+          }
         }
       ]
     },
@@ -69,32 +362,333 @@
       "id": "teen_15",
       "title": "Age 15",
       "body": "Phones are everywhere. Everyone's life looks edited and shiny. You still have chores, a part-time allowance, and opinions that don't fit in a caption.",
-      "onEnter": { "ageDelta": 3 },
+      "onEnter": {
+        "ageDelta": 1
+      },
       "choices": [
         {
           "id": "limit_scroll",
           "label": "Mute a few feeds and pick one real hobby instead",
-          "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": 5, "health": 3, "intelligence": 5 }
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": 5,
+            "health": 3,
+            "intelligence": 5
+          }
         },
         {
           "id": "post_more",
           "label": "Post constantly — maybe the likes will feel like friends",
-          "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": -6, "health": -4, "intelligence": -12 }
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": -6,
+            "health": -4,
+            "intelligence": -12
+          }
         },
         {
           "id": "doomscroll",
           "label": "Install every trending app and scroll until your eyes burn",
-          "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": 4, "health": -6, "intelligence": -14, "money": -15 }
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": 4,
+            "health": -6,
+            "intelligence": -14,
+            "assets": -15
+          }
         },
         {
           "id": "side_project",
           "label": "Start a tiny online project (stickers, tips, silly videos)",
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": 3,
+            "health": -2,
+            "intelligence": 2,
+            "assets": 80
+          },
+          "flagsAdd": [
+            "side_hustle"
+          ]
+        },
+        {
+          "id": "fast_food",
+          "label": "Default to fast food when you're late, stressed, or bored",
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": 6,
+            "health": -8,
+            "intelligence": -2,
+            "assets": -40,
+            "weightLbs": 5.5,
+            "heightInches": -0.1
+          },
+          "flagsAdd": [
+            "fast_food_phase"
+          ]
+        },
+        {
+          "id": "vape_start",
+          "label": "Try vaping with friends — cool now, lungs later",
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": 3,
+            "health": -5,
+            "intelligence": -2,
+            "assets": -30
+          },
+          "flagsAdd": [
+            "smoking_phase"
+          ]
+        },
+        {
+          "id": "party_heavy",
+          "label": "Party weekends — say yes to shots every time",
+          "nextNodeId": "year_16",
+          "deltas": {
+            "happiness": 6,
+            "socialSkill": 5,
+            "health": -12,
+            "intelligence": -2,
+            "assets": -45
+          },
+          "flagsAdd": [
+            "party_phase",
+            "heavy_drinker"
+          ]
+        }
+      ]
+    },
+    "year_16": {
+      "id": "year_16",
+      "title": "Age 16",
+      "body": "Sixteen: driver's ed pamphlets, first real paycheck fantasies, someone you like who might not know your name.",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_16_a",
+          "label": "Stack shifts and save for a beater car",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "happiness": 2,
+            "health": -3,
+            "intelligence": 1,
+            "assets": 120
+          }
+        },
+        {
+          "id": "year_16_b",
+          "label": "Volunteer weekends; sleep in on Mondays",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "happiness": 5,
+            "intelligence": 3,
+            "health": 1,
+            "assets": -25
+          }
+        },
+        {
+          "id": "year_16_date_splurge",
+          "label": "Fancy dinner and flowers for someone you like — wallet screams",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "happiness": 6,
+            "romanticSkill": 8,
+            "socialSkill": 3,
+            "assets": -220,
+            "health": -1
+          }
+        },
+        {
+          "id": "year_16_c",
+          "label": "Tunnel vision on grades for scholarship rumors",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "intelligence": 6,
+            "happiness": -4,
+            "health": -2
+          }
+        },
+        {
+          "id": "year_16_lang_es",
+          "label": "After-school Spanish — slow mouth, laughs, bad accents",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "happiness": 3,
+            "intelligence": 3,
+            "socialSkill": 4,
+            "assets": -35,
+            "languageLevelsSet": [
+              {
+                "code": "es",
+                "level": "basic"
+              }
+            ]
+          }
+        },
+        {
+          "id": "year_16_lang_fr",
+          "label": "French club — films with subtitles and ego bruises",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "happiness": 2,
+            "intelligence": 4,
+            "socialSkill": 3,
+            "assets": -30,
+            "languageLevelsSet": [
+              {
+                "code": "fr",
+                "level": "basic"
+              }
+            ]
+          }
+        },
+        {
+          "id": "year_16_lang_zh",
+          "label": "Saturday Mandarin — tones that fight back",
+          "nextNodeId": "north_star_check_16",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 5,
+            "socialSkill": 2,
+            "assets": -45,
+            "languageLevelsSet": [
+              {
+                "code": "zh",
+                "level": "basic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "year_17": {
+      "id": "year_17",
+      "title": "Age 17",
+      "body": "Seventeen is college tours, trade school flyers, or neither. Everyone has advice; your head hums.",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_17_a",
+          "label": "Tour campuses and stress-eat free mints",
+          "nextNodeId": "year_18",
+          "deltas": {
+            "intelligence": 3,
+            "happiness": -3,
+            "health": -2,
+            "assets": -40
+          }
+        },
+        {
+          "id": "year_17_b",
+          "label": "Shadow someone at work and imagine that life",
+          "nextNodeId": "year_18",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": 2,
+            "health": -1,
+            "assets": 30
+          }
+        },
+        {
+          "id": "year_17_c",
+          "label": "Road trip weekend with friends — cheap motels",
+          "nextNodeId": "year_18",
+          "deltas": {
+            "happiness": 8,
+            "health": 2,
+            "intelligence": 1,
+            "assets": -90
+          }
+        },
+        {
+          "id": "year_17_prom",
+          "label": "Prom night: limo split, outfit, photos — teenage theater at full volume",
+          "nextNodeId": "year_18",
+          "deltas": {
+            "happiness": 7,
+            "socialSkill": 6,
+            "romanticSkill": 2,
+            "assets": -180,
+            "health": -2
+          }
+        }
+      ]
+    },
+    "year_18": {
+      "id": "year_18",
+      "title": "Age 18",
+      "body": "Eighteen lands like a door unlocking. Voting, contracts, and tiny print. You're still under your parents' roof, but the lease on childhood is almost up. The feed still thinks you're a kid. In some countries, military or national service is the shadow behind the birthday cake — optional here, but real if you choose it (discipline and strength; strain; a tiny chance you don't come back whole, or at all).",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_18_military_service",
+          "label": "Sign up for military or intensive national service — harder body, heavier head, rare lethal or disabling risk",
           "nextNodeId": "social_media_beat",
-          "deltas": { "happiness": 3, "money": 80, "health": -2, "intelligence": 2 },
-          "flagsAdd": ["side_hustle"]
+          "showIfCountryIn": [
+            "il",
+            "ru",
+            "eg"
+          ],
+          "deltas": {
+            "health": 6,
+            "happiness": -10,
+            "socialSkill": 3,
+            "intelligence": 1
+          },
+          "flagsAdd": [
+            "chose_military_service"
+          ]
+        },
+        {
+          "id": "year_18_a",
+          "label": "Open a real bank account and read every fee",
+          "nextNodeId": "social_media_beat",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": 1,
+            "assets": -15
+          }
+        },
+        {
+          "id": "year_18_b",
+          "label": "Throw a chaotic birthday and worry about the cleanup",
+          "nextNodeId": "social_media_beat",
+          "deltas": {
+            "happiness": 9,
+            "health": -3,
+            "intelligence": -1,
+            "assets": -55
+          }
+        },
+        {
+          "id": "year_18_c",
+          "label": "Ghost the group chat for a week and walk outside",
+          "nextNodeId": "social_media_beat",
+          "deltas": {
+            "happiness": 3,
+            "health": 4,
+            "intelligence": 2
+          }
+        },
+        {
+          "id": "sedentary_year",
+          "label": "Skip PE and long walks — stay on the couch with screens",
+          "nextNodeId": "social_media_beat",
+          "deltas": {
+            "health": -6,
+            "happiness": 2,
+            "intelligence": -3
+          },
+          "flagsAdd": [
+            "sedentary_phase"
+          ]
         }
       ]
     },
@@ -106,66 +700,2166 @@
         {
           "id": "research",
           "label": "Research seriously: compare college, work, and trade school",
-          "nextNodeId": "young_adult_fork",
-          "deltas": { "happiness": 2, "intelligence": 6 }
+          "nextNodeId": "year_19",
+          "deltas": {
+            "happiness": 2,
+            "intelligence": 6
+          }
         },
         {
           "id": "ignore",
           "label": "Close the tab and pretend adulthood is far away",
-          "nextNodeId": "young_adult_fork",
-          "deltas": { "happiness": -2, "health": 2, "intelligence": -4 }
+          "nextNodeId": "year_19",
+          "deltas": {
+            "happiness": -2,
+            "health": 2,
+            "intelligence": -4
+          }
+        }
+      ]
+    },
+    "year_19": {
+      "id": "year_19",
+      "title": "Age 19",
+      "body": "Nineteen: you're not at your parents' house on paper anymore — dorm, first lease, or a friend of a friend. Rent and deposits hit your assets the day this year begins. Cash still leaks in dumb places.",
+      "onEnter": {
+        "ageDelta": 1,
+        "assets": -6400
+      },
+      "onEnterSetHome": {
+        "value": 0,
+        "label": "Renting · away from parents"
+      },
+      "choices": [
+        {
+          "id": "year_19_a",
+          "label": "Meal prep Sundays; boring but steady",
+          "nextNodeId": "year_20",
+          "deltas": {
+            "health": 3,
+            "happiness": 1,
+            "intelligence": 2,
+            "assets": 35
+          }
+        },
+        {
+          "id": "year_19_b",
+          "label": "Concert tickets on credit you swear you'll pay",
+          "nextNodeId": "year_20",
+          "deltas": {
+            "happiness": 8,
+            "health": -1,
+            "intelligence": -2,
+            "assets": -120
+          }
+        },
+        {
+          "id": "year_19_c",
+          "label": "Pick up gig apps when cash runs thin",
+          "nextNodeId": "year_20",
+          "deltas": {
+            "happiness": -2,
+            "health": -3,
+            "intelligence": 1,
+            "assets": 85
+          }
+        }
+      ]
+    },
+    "year_20": {
+      "id": "year_20",
+      "title": "Age 20",
+      "body": "Twenty feels like a checkpoint. Half your friends post milestones; half disappear. Another year of rent or room charges ticks by.",
+      "onEnter": {
+        "ageDelta": 1,
+        "assets": -6000
+      },
+      "choices": [
+        {
+          "id": "year_20_a",
+          "label": "Start a real budget spreadsheet",
+          "nextNodeId": "year_21",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": -1,
+            "assets": 20
+          }
+        },
+        {
+          "id": "year_20_b",
+          "label": "Say yes to a messy trip you can't quite afford",
+          "nextNodeId": "year_21",
+          "deltas": {
+            "happiness": 10,
+            "health": 2,
+            "intelligence": -1,
+            "assets": -200
+          }
+        },
+        {
+          "id": "year_20_c",
+          "label": "Double down on certifications or night classes",
+          "nextNodeId": "year_21",
+          "deltas": {
+            "intelligence": 7,
+            "happiness": -3,
+            "health": -2,
+            "assets": -80
+          }
+        },
+        {
+          "id": "year_20_lang_studio",
+          "label": "Conversational language studio — get awkward on purpose",
+          "nextNodeId": "year_21",
+          "deltas": {
+            "happiness": 4,
+            "intelligence": 3,
+            "socialSkill": 5,
+            "assets": -140,
+            "languageLevelsSet": [
+              {
+                "code": "es",
+                "level": "proficient"
+              }
+            ]
+          }
+        },
+        {
+          "id": "year_20_social_flop",
+          "label": "You're trying to be a creator: post with a trending audio — it dies in an hour",
+          "nextNodeId": "year_21",
+          "showForNorthStar": "Social media creator",
+          "deltas": {
+            "happiness": -11,
+            "health": -6,
+            "socialSkill": 3,
+            "intelligence": -3,
+            "assets": -22
+          }
+        },
+        {
+          "id": "year_20_social_hit",
+          "label": "Cheap clip somehow hits the For You page — dopamine, dread, and a tiny creator fund",
+          "nextNodeId": "year_21",
+          "showForNorthStar": "Social media creator",
+          "deltas": {
+            "happiness": 10,
+            "health": -4,
+            "socialSkill": 6,
+            "intelligence": -2,
+            "assets": 38
+          }
+        }
+      ]
+    },
+    "year_21": {
+      "id": "year_21",
+      "title": "Age 21",
+      "body": "Twenty-one: IDs checked, advice from relatives, small wins and small panics. Housing still isn't free.",
+      "onEnter": {
+        "ageDelta": 1,
+        "assets": -6000
+      },
+      "choices": [
+        {
+          "id": "year_21_a",
+          "label": "Negotiate a raise with shaking hands",
+          "nextNodeId": "north_star_check_21",
+          "deltas": {
+            "happiness": 4,
+            "intelligence": 3,
+            "health": -2,
+            "assets": 150
+          }
+        },
+        {
+          "id": "year_21_b",
+          "label": "Move cities for a fresh start",
+          "nextNodeId": "north_star_check_21",
+          "deltas": {
+            "happiness": 6,
+            "health": -1,
+            "intelligence": 2,
+            "assets": -300
+          }
+        },
+        {
+          "id": "year_21_c",
+          "label": "Stay put and build routines that stick",
+          "nextNodeId": "north_star_check_21",
+          "deltas": {
+            "happiness": 3,
+            "health": 4,
+            "intelligence": 2,
+            "assets": 40
+          }
+        },
+        {
+          "id": "year_21_social_metrics_low",
+          "label": "Creator life: refresh analytics until 3am — views flat, self-esteem lower",
+          "nextNodeId": "north_star_check_21",
+          "showForNorthStar": "Social media creator",
+          "deltas": {
+            "happiness": -13,
+            "health": -9,
+            "socialSkill": 4,
+            "intelligence": -3,
+            "assets": -40
+          }
+        },
+        {
+          "id": "year_21_social_metrics_high",
+          "label": "One idea pops: not life-changing money, but DMs from tiny brands and a high you can't trust",
+          "nextNodeId": "north_star_check_21",
+          "showForNorthStar": "Social media creator",
+          "deltas": {
+            "happiness": 12,
+            "health": -6,
+            "socialSkill": 7,
+            "intelligence": -2,
+            "assets": 62
+          }
+        }
+      ]
+    },
+    "invest_young_adult": {
+      "id": "invest_young_adult",
+      "title": "Odd jobs and apps",
+      "body": "Your account finally looks like something. Everyone has an opinion: index funds, \"safe\" yields, parlays, or coins with a dog on them.",
+      "choices": [
+        {
+          "id": "invest_stocks",
+          "label": "Buy a broad stock index and try not to panic when it dips",
+          "nextNodeId": "year_22",
+          "deltas": {
+            "happiness": 4,
+            "health": -1,
+            "intelligence": 5,
+            "assets": 95
+          },
+          "flagsAdd": [
+            "invested_stocks"
+          ]
+        },
+        {
+          "id": "invest_bonds",
+          "label": "Park money in bonds and treasury-style savings — boring on purpose",
+          "nextNodeId": "year_22",
+          "deltas": {
+            "happiness": 3,
+            "health": 1,
+            "intelligence": 2,
+            "assets": 32
+          },
+          "flagsAdd": [
+            "invested_bonds"
+          ]
+        },
+        {
+          "id": "bet_sports",
+          "label": "Chase quick wins with sports betting apps and live odds",
+          "nextNodeId": "year_22",
+          "deltas": {
+            "happiness": -14,
+            "health": -7,
+            "intelligence": -6,
+            "assets": -125
+          },
+          "flagsAdd": [
+            "sports_betting_phase"
+          ]
+        },
+        {
+          "id": "invest_crypto",
+          "label": "YOLO into crypto threads, wallets, and 3 a.m. charts",
+          "nextNodeId": "year_22",
+          "deltas": {
+            "happiness": -5,
+            "health": -5,
+            "intelligence": 4,
+            "assets": -80
+          },
+          "flagsAdd": [
+            "invested_crypto"
+          ]
+        }
+      ]
+    },
+    "year_22": {
+      "id": "year_22",
+      "title": "Age 22",
+      "body": "Twenty-two: first real \"career\" bruises or weird wins. You learn which meetings could've been emails. Rent still shows up every year.",
+      "onEnter": {
+        "ageDelta": 1,
+        "assets": -5800
+      },
+      "choices": [
+        {
+          "id": "year_22_a",
+          "label": "Network awkwardly at industry meetups",
+          "nextNodeId": "year_23",
+          "deltas": {
+            "intelligence": 3,
+            "happiness": -2,
+            "health": -1,
+            "assets": -40
+          }
+        },
+        {
+          "id": "year_22_b",
+          "label": "Protect evenings like they're sacred",
+          "nextNodeId": "year_23",
+          "deltas": {
+            "happiness": 5,
+            "health": 4,
+            "intelligence": 1,
+            "assets": -20
+          }
+        },
+        {
+          "id": "year_22_c",
+          "label": "Take a certification exam on no sleep",
+          "nextNodeId": "year_23",
+          "deltas": {
+            "intelligence": 5,
+            "happiness": -4,
+            "health": -4,
+            "assets": -95
+          }
+        }
+      ]
+    },
+    "year_23": {
+      "id": "year_23",
+      "title": "Age 23",
+      "body": "Twenty-three: comparisons itch. Someone buys a car; someone moves abroad; you refill the coffee maker. One more year of paying for a roof.",
+      "onEnter": {
+        "ageDelta": 1,
+        "assets": -5800
+      },
+      "choices": [
+        {
+          "id": "year_23_a",
+          "label": "Therapy copay feels worth it",
+          "nextNodeId": "year_24",
+          "deltas": {
+            "happiness": 6,
+            "health": 3,
+            "intelligence": 2,
+            "assets": -60
+          }
+        },
+        {
+          "id": "year_23_b",
+          "label": "Side project that might never pay",
+          "nextNodeId": "year_24",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": 3,
+            "health": -2,
+            "assets": -45
+          }
+        },
+        {
+          "id": "year_23_c",
+          "label": "Overtime streak for a bonus that might not come",
+          "nextNodeId": "year_24",
+          "deltas": {
+            "happiness": -5,
+            "health": -5,
+            "intelligence": 1,
+            "assets": 110
+          }
+        },
+        {
+          "id": "year_23_social_pileon",
+          "label": "Sponsored post misfires — comments turn feral, you pretend you don't care",
+          "nextNodeId": "year_24",
+          "showForNorthStar": "Social media creator",
+          "deltas": {
+            "happiness": -14,
+            "health": -7,
+            "socialSkill": 3,
+            "intelligence": -1,
+            "assets": -28
+          }
+        },
+        {
+          "id": "year_23_social_wholesome",
+          "label": "Wholesome trend rides the wave — mostly likes, a little hope, still not a salary",
+          "nextNodeId": "year_24",
+          "showForNorthStar": "Social media creator",
+          "deltas": {
+            "happiness": 13,
+            "health": -4,
+            "socialSkill": 5,
+            "intelligence": -2,
+            "assets": 48
+          }
+        }
+      ]
+    },
+    "year_24": {
+      "id": "year_24",
+      "title": "Age 24",
+      "body": "Twenty-four: you can almost see the shape of your twenties. Big choices stop feeling hypothetical.",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "year_24_a",
+          "label": "Finally move in with chosen roommates or solo",
+          "nextNodeId": "where_you_base",
+          "deltas": {
+            "happiness": 5,
+            "health": 1,
+            "intelligence": 2,
+            "assets": -400
+          }
+        },
+        {
+          "id": "year_24_b",
+          "label": "Pay down debt aggressively; rice and beans season",
+          "nextNodeId": "where_you_base",
+          "deltas": {
+            "happiness": -4,
+            "health": 2,
+            "intelligence": 3,
+            "assets": 200
+          }
+        },
+        {
+          "id": "year_24_c",
+          "label": "Adopt a pet on impulse",
+          "nextNodeId": "where_you_base",
+          "deltas": {
+            "happiness": 10,
+            "health": 2,
+            "intelligence": -2,
+            "assets": -180
+          }
+        }
+      ]
+    },
+    "where_you_base": {
+      "id": "where_you_base",
+      "title": "Where you're based",
+      "body": "Twenty-four redraws the map. Plenty of people stay rooted where they grew up. Pro hoops and similar leagues often pull talent toward the United States—drafts, college pipelines, and shiny contracts. Founders sometimes chase the same geography for investors and brutal hours. A few go full nomad: visas, short lets, carry-on life, no address that sticks long.",
+      "choices": [
+        {
+          "id": "base_stay_home",
+          "label": "Stay based where I grew up — same country as family roots",
+          "nextNodeId": "housing_decision",
+          "flagsAdd": [
+            "stay_home_country"
+          ],
+          "deltas": {
+            "happiness": 2,
+            "setResidenceCountryId": "@birth"
+          }
+        },
+        {
+          "id": "base_move_us_pro_sports",
+          "label": "Move to the United States for draft, NCAA pipeline, or pro league shots (NBA and beyond)",
+          "nextNodeId": "housing_decision",
+          "requiredFlags": [
+            "athlete_track"
+          ],
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "hideIfHomeCountry": "us",
+          "showForNorthStar": "Athlete",
+          "flagsAdd": [
+            "relocated_for_pro_sports"
+          ],
+          "deltas": {
+            "happiness": 5,
+            "health": 1,
+            "assets": -1800,
+            "setResidenceCountryId": "us",
+            "countriesVisitedAdd": [
+              "us"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "us",
+                "places": 6
+              }
+            ],
+            "languageLevelsSet": [
+              {
+                "code": "en",
+                "level": "proficient"
+              }
+            ]
+          }
+        },
+        {
+          "id": "base_move_us_startup",
+          "label": "Relocate to the United States for startup density and capital (long visas, burned savings)",
+          "nextNodeId": "housing_decision",
+          "showForNorthStar": "Entrepreneur",
+          "hideIfHomeCountry": "us",
+          "flagsAdd": [
+            "relocated_for_work_us"
+          ],
+          "deltas": {
+            "happiness": 3,
+            "intelligence": 2,
+            "health": -2,
+            "assets": -4200,
+            "setResidenceCountryId": "us",
+            "countriesVisitedAdd": [
+              "us"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "us",
+                "places": 5
+              }
+            ],
+            "languageLevelsSet": [
+              {
+                "code": "en",
+                "level": "proficient"
+              }
+            ]
+          }
+        },
+        {
+          "id": "base_move_eu_hub",
+          "label": "Base in a European hub for a fresh market (London–Berlin axis; heavy rent shock)",
+          "nextNodeId": "housing_decision",
+          "hideIfHomeCountry": "gb",
+          "flagsAdd": [
+            "relocated_abroad"
+          ],
+          "deltas": {
+            "happiness": 4,
+            "assets": -2600,
+            "setResidenceCountryId": "gb",
+            "countriesVisitedAdd": [
+              "gb"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "gb",
+                "places": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "base_nomad",
+          "label": "Go nomad — no fixed country, rolling time zones and short lets",
+          "nextNodeId": "housing_decision",
+          "flagsAdd": [
+            "nomad_lifestyle"
+          ],
+          "deltas": {
+            "happiness": 6,
+            "health": -4,
+            "assets": -900,
+            "setResidenceCountryId": "nomad",
+            "visitPlacesAdd": [
+              {
+                "countryId": "es",
+                "places": 2
+              },
+              {
+                "countryId": "pt",
+                "places": 2
+              },
+              {
+                "countryId": "au",
+                "places": 1
+              }
+            ]
+          }
         }
       ]
     },
     "young_adult_fork": {
       "id": "young_adult_fork",
       "title": "Almost grown",
-      "body": "You're rounding eighteen. People you trust disagree about what \"smart\" looks like. Money is real now: rent someday, loans, or paychecks. College costs a lot up front, but it can sharpen your mind for years after.",
-      "onEnter": { "ageDelta": 3 },
+      "body": "You are in your mid-twenties. People you trust still disagree about what \"smart\" looks like. Assets, rent, equity, and student-sized habits all compete. College costs a lot up front, but it can sharpen your mind for years after. Your parents watch how you've been doing — grades, mood, friends, vices — and slide you a lump sum when you commit to a path (bigger if they approve, stingier if you look messy).",
+      "onEnterEffects": [
+        "parent_stipend"
+      ],
       "choices": [
         {
           "id": "college",
           "label": "Apply to college — big loans, roommates, brutal reading lists",
-          "nextNodeId": "ending_college",
-          "deltas": { "happiness": 4, "health": -5, "money": -650, "intelligence": 20 },
-          "flagsAdd": ["chose_college"]
+          "nextNodeId": "midlife_after_college",
+          "deltas": {
+            "happiness": 4,
+            "health": -5,
+            "intelligence": 20,
+            "assets": -650,
+            "debt": 32000
+          },
+          "flagsAdd": [
+            "chose_college"
+          ]
         },
         {
           "id": "work",
           "label": "Skip degree for now and take a full-time job",
-          "nextNodeId": "ending_work",
-          "deltas": { "money": 200, "happiness": -2, "health": -4, "intelligence": 3 },
-          "flagsAdd": ["chose_work"]
+          "nextNodeId": "midlife_after_work",
+          "deltas": {
+            "happiness": -2,
+            "health": -4,
+            "intelligence": 3,
+            "assets": 200
+          },
+          "flagsAdd": [
+            "chose_work"
+          ]
         },
         {
           "id": "gap",
           "label": "Gap year: work part-time and travel cheap",
-          "nextNodeId": "ending_gap",
-          "deltas": { "happiness": 10, "money": -150, "health": 4, "intelligence": 5 },
-          "flagsAdd": ["gap_year"]
+          "nextNodeId": "midlife_after_gap",
+          "deltas": {
+            "happiness": 10,
+            "health": 4,
+            "intelligence": 5,
+            "assets": -150
+          },
+          "flagsAdd": [
+            "gap_year"
+          ]
         }
       ]
     },
-    "ending_college": {
-      "id": "ending_college",
-      "title": "Chapter pause",
-      "body": "You chose the campus path — noisy dorms, strange dining hall food, and classes that sometimes electrify you. This demo ends here, but your story keeps going: majors, friendships, burnout, breakthroughs. More chapters are coming to Game of Lyfe.",
-      "onEnter": { "ageDelta": 0 },
+    "vacation_styles": {
+      "id": "vacation_styles",
+      "title": "Where to disappear",
+      "body": "You clear the calendar. Trips cost real cash — and they pay you back in mood, friends, and sometimes your lungs. Pick the kind of escape you can almost afford.",
+      "choices": [
+        {
+          "id": "vac_cruise",
+          "label": "Caribbean cruise — islands, buffet gravity, midnight decks",
+          "nextNodeId": "vacation_return_router",
+          "minNetWorth": 5500,
+          "deltas": {
+            "happiness": 14,
+            "health": 8,
+            "socialSkill": 10,
+            "intelligence": 1,
+            "assets": -5200,
+            "countriesVisitedAdd": [
+              "jm",
+              "bs",
+              "mx"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "jm",
+                "places": 2
+              },
+              {
+                "countryId": "bs",
+                "places": 2
+              },
+              {
+                "countryId": "mx",
+                "places": 2
+              }
+            ]
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        },
+        {
+          "id": "vac_europe_fly",
+          "label": "Fly to Europe — one week, capital highlights, brutal jet lag",
+          "nextNodeId": "vacation_return_router",
+          "minNetWorth": 12000,
+          "deltas": {
+            "happiness": 13,
+            "health": 5,
+            "socialSkill": 11,
+            "intelligence": 3,
+            "assets": -9200,
+            "countriesVisitedAdd": [
+              "fr",
+              "gb",
+              "it"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "fr",
+                "places": 6
+              },
+              {
+                "countryId": "gb",
+                "places": 3
+              },
+              {
+                "countryId": "it",
+                "places": 5
+              }
+            ]
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        },
+        {
+          "id": "vac_euro_backpack",
+          "label": "Euro backpacking month — hostels, trains, too many cities",
+          "nextNodeId": "vacation_return_router",
+          "minNetWorth": 14000,
+          "deltas": {
+            "happiness": 18,
+            "health": 4,
+            "socialSkill": 14,
+            "intelligence": 4,
+            "assets": -11800,
+            "countriesVisitedAdd": [
+              "fr",
+              "de",
+              "it",
+              "es",
+              "pt"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "fr",
+                "places": 4
+              },
+              {
+                "countryId": "de",
+                "places": 6
+              },
+              {
+                "countryId": "it",
+                "places": 5
+              },
+              {
+                "countryId": "es",
+                "places": 4
+              },
+              {
+                "countryId": "pt",
+                "places": 3
+              }
+            ]
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        },
+        {
+          "id": "vac_us_parks",
+          "label": "US national parks road trip — trails, storms, dumb luck",
+          "nextNodeId": "vacation_return_router",
+          "minNetWorth": 4000,
+          "deltas": {
+            "happiness": 12,
+            "health": 12,
+            "socialSkill": 7,
+            "intelligence": 2,
+            "assets": -3400,
+            "countriesVisitedAdd": [
+              "us"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "us",
+                "places": 6
+              }
+            ]
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        },
+        {
+          "id": "vac_beach_mx",
+          "label": "Resort week — warm water, cold drinks, one pool you'll remember",
+          "nextNodeId": "vacation_return_router",
+          "minNetWorth": 4500,
+          "deltas": {
+            "happiness": 11,
+            "health": 9,
+            "socialSkill": 8,
+            "assets": -4100,
+            "countriesVisitedAdd": [
+              "mx"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "mx",
+                "places": 4
+              }
+            ]
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        },
+        {
+          "id": "vac_japan",
+          "label": "Japan — cities, temples, trains that run on shame and pride",
+          "nextNodeId": "vacation_return_router",
+          "minNetWorth": 16000,
+          "deltas": {
+            "happiness": 16,
+            "health": 5,
+            "socialSkill": 12,
+            "intelligence": 3,
+            "assets": -10800,
+            "countriesVisitedAdd": [
+              "jp"
+            ],
+            "visitPlacesAdd": [
+              {
+                "countryId": "jp",
+                "places": 8
+              }
+            ]
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        },
+        {
+          "id": "vac_staycheap",
+          "label": "Staycation — couch, local hikes, guilt about not going farther (cheap)",
+          "nextNodeId": "vacation_return_router",
+          "deltas": {
+            "happiness": 5,
+            "health": 4,
+            "socialSkill": 2,
+            "assets": -280
+          },
+          "flagsAdd": [
+            "took_vacation"
+          ]
+        }
+      ]
+    },
+    "vacation_return_router": {
+      "id": "vacation_return_router",
+      "title": "Back through customs",
+      "body": "You return with a camera roll of almost-good photos and a body that remembers walking. Normal life resumes — until the next itch to leave.",
+      "choices": [
+        {
+          "id": "vac_ret_c",
+          "label": "Step back into your chapter",
+          "requiredFlags": [
+            "return_l37c"
+          ],
+          "nextNodeId": "life_37_college",
+          "deltas": {}
+        },
+        {
+          "id": "vac_ret_w",
+          "label": "Step back into your chapter",
+          "requiredFlags": [
+            "return_l37w"
+          ],
+          "nextNodeId": "life_37_work",
+          "deltas": {}
+        },
+        {
+          "id": "vac_ret_g",
+          "label": "Step back into your chapter",
+          "requiredFlags": [
+            "return_l37g"
+          ],
+          "nextNodeId": "life_37_gap",
+          "deltas": {}
+        }
+      ]
+    },
+    "midlife_after_college": {
+      "id": "midlife_after_college",
+      "title": "Later on",
+      "body": "Your twenties slide into your thirties. Classes are behind you, but loans and rent still argue every month. Leadership floats a high-visibility project — the kind that eats nights and weekends. Or you could finally block two weeks, drain savings a little, and go somewhere that isn't a screen.",
+      "onEnter": {
+        "ageDelta": 12
+      },
+      "choices": [
+        {
+          "id": "vacation_college",
+          "label": "Take a real vacation — beaches, trains, or sleeping in somewhere new",
+          "nextNodeId": "vacation_styles",
+          "flagsAdd": [
+            "return_l37c"
+          ]
+        },
+        {
+          "id": "grind_college",
+          "label": "Say yes to the extra project and keep pushing the career ladder",
+          "nextNodeId": "life_37_college",
+          "deltas": {
+            "happiness": -8,
+            "health": -6,
+            "intelligence": 5,
+            "assets": 180
+          }
+        }
+      ]
+    },
+    "midlife_after_work": {
+      "id": "midlife_after_work",
+      "title": "Later on",
+      "body": "Years of shifts, deadlines, and small raises add up. You're not scraping by anymore, but you're running on fumes. Your manager hints at a promotion track that means more travel and more email. Your savings could buy silence — a trip long enough to remember what a weekday without alarms feels like.",
+      "onEnter": {
+        "ageDelta": 12
+      },
+      "choices": [
+        {
+          "id": "vacation_work",
+          "label": "Book time off and go on vacation instead of chasing the next title",
+          "nextNodeId": "vacation_styles",
+          "flagsAdd": [
+            "return_l37w"
+          ]
+        },
+        {
+          "id": "grind_work",
+          "label": "Double down: take the stretch role and keep stacking hours",
+          "nextNodeId": "life_37_work",
+          "deltas": {
+            "happiness": -10,
+            "health": -8,
+            "intelligence": 3,
+            "assets": 420
+          }
+        }
+      ]
+    },
+    "midlife_after_gap": {
+      "id": "midlife_after_gap",
+      "title": "Later on",
+      "body": "You never quite snapped back to a single lane — gigs, seasons, cheap flights when you could. The cushion in your account is real but nervous. An offer lands: a longer contract, steady pay, less sky. Or you could blow a chunk of the stash on one long unplugged trip before the next chapter.",
+      "onEnter": {
+        "ageDelta": 12
+      },
+      "choices": [
+        {
+          "id": "vacation_gap",
+          "label": "Choose the long trip — rest now before the next grind",
+          "nextNodeId": "vacation_styles",
+          "flagsAdd": [
+            "return_l37g"
+          ]
+        },
+        {
+          "id": "grind_gap",
+          "label": "Take the steady contract and postpone the dream vacation",
+          "nextNodeId": "life_37_gap",
+          "deltas": {
+            "happiness": -6,
+            "health": -5,
+            "intelligence": 4,
+            "assets": 320
+          }
+        }
+      ]
+    },
+    "life_37_college": {
+      "id": "life_37_college",
+      "title": "The degree still echoes",
+      "body": "You're in your late thirties. Paper still opens doors; interest rates still whisper at night. Peers swap stories about layoffs and side projects. You feel the first real fork between roots and runway.",
+      "choices": [
+        {
+          "id": "lc_roots",
+          "label": "Invest in roots — steadier housing, a partnership, fewer cross-country pivots",
+          "nextNodeId": "life_40_converge",
+          "deltas": {
+            "happiness": 6,
+            "assets": -14000,
+            "legacyFamilyHarmony": 10,
+            "legacyHeirReadiness": 6
+          },
+          "flagsAdd": ["has_partner", "family_focus"]
+        },
+        {
+          "id": "lc_runway",
+          "label": "Keep chasing the title — bigger job, brighter résumé, thinner margins",
+          "nextNodeId": "life_40_converge",
+          "deltas": {
+            "happiness": -3,
+            "health": -4,
+            "assets": 32000,
+            "legacyRepute": 12,
+            "legacyFamilyHarmony": -5
+          }
+        }
+      ]
+    },
+    "life_37_work": {
+      "id": "life_37_work",
+      "title": "Momentum and mileage",
+      "body": "Late thirties. You know how shifts feel in your knees and your inbox. Some friends bought houses; some roommates became legends. You're carrying more competence than credit — and wondering if that's enough.",
+      "choices": [
+        {
+          "id": "lw_trade_up",
+          "label": "Trade up carefully — better pay, night classes, small cushion",
+          "nextNodeId": "life_40_converge",
+          "deltas": {
+            "happiness": 2,
+            "intelligence": 6,
+            "assets": 18000,
+            "legacyHeirReadiness": 4
+          },
+          "flagsAdd": ["has_partner"]
+        },
+        {
+          "id": "lw_hustle",
+          "label": "Stack overtime and side gigs while you still can",
+          "nextNodeId": "life_40_converge",
+          "deltas": {
+            "happiness": -6,
+            "health": -6,
+            "assets": 26000,
+            "legacyRepute": 6
+          }
+        }
+      ]
+    },
+    "life_37_gap": {
+      "id": "life_37_gap",
+      "title": "Scrapbook and spreadsheets",
+      "body": "Late thirties, and your path still refuses a single headline. Stability flickers — sometimes a lease, sometimes a friend's couch between gigs. You're rich in stories and nervous about the next decade.",
+      "choices": [
+        {
+          "id": "lg_anchor",
+          "label": "Anchor somewhere — sign the lease, set down a toolbox, learn the neighbors",
+          "nextNodeId": "life_40_converge",
+          "deltas": {
+            "happiness": 8,
+            "health": 3,
+            "assets": -8000,
+            "legacyFamilyHarmony": 8
+          },
+          "flagsAdd": ["has_partner"]
+        },
+        {
+          "id": "lg_wander",
+          "label": "Stay light on your feet — another season of maybe",
+          "nextNodeId": "life_40_converge",
+          "deltas": {
+            "happiness": 4,
+            "assets": 5000,
+            "legacyRepute": 4,
+            "legacyHeirReadiness": -4
+          }
+        }
+      ]
+    },
+    "life_40_converge": {
+      "id": "life_40_converge",
+      "title": "Forty and the fire alarm tests itself",
+      "body": "Forty lands like a bookmark. Some people show you baby photos; others show spreadsheets. You notice who's tired, who's numb, and who still laughs loud at bad jokes. You choose what this decade owes you.",
+      "onEnter": {
+        "ageDelta": 3
+      },
+      "choices": [
+        {
+          "id": "l40_kids",
+          "label": "Grow the family — sleepless years, loud love, long obligations",
+          "nextNodeId": "life_50_prime",
+          "deltas": {
+            "happiness": 4,
+            "health": -5,
+            "assets": -22000,
+            "legacyFamilyHarmony": 12,
+            "legacyHeirReadiness": 10
+          },
+          "flagsAdd": ["has_kids"]
+        },
+        {
+          "id": "l40_focus",
+          "label": "Protect the dyad or solo path — fewer dependents, clearer calendars",
+          "nextNodeId": "life_50_prime",
+          "deltas": {
+            "happiness": 6,
+            "assets": 12000,
+            "legacyFamilyHarmony": 4
+          },
+          "flagsAdd": ["no_kids"]
+        },
+        {
+          "id": "l40_care_parent",
+          "label": "Step into elder care for a parent — expensive, heavy, meaningful",
+          "nextNodeId": "life_50_prime",
+          "deltas": {
+            "happiness": -2,
+            "health": -6,
+            "assets": -18000,
+            "legacyFamilyHarmony": 14,
+            "legacyGenerosity": 6
+          },
+          "flagsAdd": ["caregiving_parent"]
+        }
+      ]
+    },
+    "life_50_prime": {
+      "id": "life_50_prime",
+      "title": "Fifty — legacy stops being abstract",
+      "body": "Half a century. Colleagues joke about reading glasses and mortality; you notice they aren't really joking. The net worth line on your screen finally means something different. What kind of weight do you want to carry forward?",
+      "onEnter": {
+        "ageDelta": 10
+      },
+      "choices": [
+        {
+          "id": "l50_mentor",
+          "label": "Mentor publicly — open office hours, messy honesty, small ripples",
+          "nextNodeId": "life_58_flow",
+          "deltas": {
+            "happiness": 6,
+            "legacyRepute": 12,
+            "legacyGenerosity": 6,
+            "legacyHeirReadiness": 6
+          },
+          "flagsAdd": ["philanthropy_active"]
+        },
+        {
+          "id": "l50_endowment",
+          "label": "Endow a local fund — serious check, serious paperwork",
+          "nextNodeId": "life_58_flow",
+          "minNetWorth": 55000,
+          "deltas": {
+            "assets": -52000,
+            "lifetimeDonatedDelta": 52000,
+            "happiness": 8,
+            "legacyGenerosity": 16,
+            "legacyRepute": 8
+          },
+          "flagsAdd": ["philanthropy_major_50", "major_donor"]
+        },
+        {
+          "id": "l50_named_gift",
+          "label": "Put your name on a scholarship — the big visible gift",
+          "nextNodeId": "life_58_flow",
+          "minNetWorth": 90000,
+          "deltas": {
+            "assets": -78000,
+            "lifetimeDonatedDelta": 78000,
+            "happiness": 5,
+            "legacyGenerosity": 18,
+            "legacyRepute": 14
+          },
+          "flagsAdd": ["major_donor", "lifetime_giving_high"]
+        },
+        {
+          "id": "l50_nest",
+          "label": "Quietly shore up the nest — retirement knobs, boring funds, fewer headlines",
+          "nextNodeId": "life_58_flow",
+          "deltas": {
+            "happiness": 3,
+            "assets": 15000,
+            "legacyHeirReadiness": 12,
+            "legacyGenerosity": -2
+          }
+        }
+      ]
+    },
+    "life_58_flow": {
+      "id": "life_58_flow",
+      "title": "Fifty-eight — momentum meets maintenance",
+      "body": "Joint pain shows up in weather forecasts. Promotions start to look like traps. Someone you love asks what you believe about money when the lights go out. You still have moves.",
+      "onEnter": {
+        "ageDelta": 8
+      },
+      "choices": [
+        {
+          "id": "l58_clinic",
+          "label": "Fund a free clinic month — medicine as the gift",
+          "nextNodeId": "life_68_reflect",
+          "minNetWorth": 70000,
+          "deltas": {
+            "assets": -43000,
+            "lifetimeDonatedDelta": 43000,
+            "legacyGenerosity": 12,
+            "health": 2,
+            "happiness": 6
+          },
+          "flagsAdd": ["philanthropy_active"]
+        },
+        {
+          "id": "l58_slow",
+          "label": "Slow the career on purpose — trade title for mornings",
+          "nextNodeId": "life_68_reflect",
+          "deltas": {
+            "happiness": 10,
+            "health": 8,
+            "assets": -6000,
+            "legacyFamilyHarmony": 8
+          }
+        },
+        {
+          "id": "l58_weight_rx",
+          "label": "Medical weight program — prescription meds, coaching, labs (very expensive)",
+          "nextNodeId": "life_68_reflect",
+          "minNetWorth": 95000,
+          "deltas": {
+            "assets": -24000,
+            "health": 8,
+            "happiness": -2,
+            "weightLbs": -28,
+            "intelligence": 1
+          },
+          "flagsAdd": ["weight_rx_program"]
+        },
+        {
+          "id": "l58_push",
+          "label": "Push one more big project — stack assets while the body agrees",
+          "nextNodeId": "life_68_reflect",
+          "deltas": {
+            "happiness": -4,
+            "health": -8,
+            "assets": 35000,
+            "legacyRepute": 6
+          }
+        }
+      ]
+    },
+    "life_68_reflect": {
+      "id": "life_68_reflect",
+      "title": "Sixty-eight — the world speeds up without you",
+      "body": "Retirement is a word people use about you. You notice memory glitches that aren't funny yet. Friends disappear into hospitals and headlines. The will isn't hypothetical anymore — it's a file someone could open.",
+      "onEnter": {
+        "ageDelta": 10
+      },
+      "choices": [
+        {
+          "id": "l68_repair",
+          "label": "Repair a family rift while there's still time",
+          "nextNodeId": "life_76_elder",
+          "deltas": {
+            "happiness": 8,
+            "health": -3,
+            "legacyFamilyHarmony": 14,
+            "assets": -4000
+          }
+        },
+        {
+          "id": "l68_rest",
+          "label": "Rest and routines — walks, doctors, small stubborn joys",
+          "nextNodeId": "life_76_elder",
+          "deltas": {
+            "health": 6,
+            "happiness": 4,
+            "assets": -3000
+          }
+        },
+        {
+          "id": "l68_spike",
+          "label": "One last gamble — swing at a venture, a cause, a spotlight",
+          "nextNodeId": "life_76_elder",
+          "deltas": {
+            "happiness": -2,
+            "health": -10,
+            "assets": -15000,
+            "legacyRepute": 10,
+            "legacyGenerosity": 4
+          }
+        }
+      ]
+    },
+    "life_76_elder": {
+      "id": "life_76_elder",
+      "title": "Seventy-six — kindness is logistics",
+      "body": "The days narrow. Helping someone dress isn't romantic until it is. Money becomes less about flex and more about who eats when you're gone.",
+      "onEnter": {
+        "ageDelta": 8
+      },
+      "choices": [
+        {
+          "id": "l76_kind",
+          "label": "Choose gentleness — smaller goals, clearer goodbyes",
+          "nextNodeId": "life_84_will",
+          "deltas": {
+            "happiness": 10,
+            "health": 2,
+            "legacyFamilyHarmony": 10
+          }
+        },
+        {
+          "id": "l76_fight",
+          "label": "Fight every inch — treatments, trials, denials",
+          "nextNodeId": "life_84_will",
+          "deltas": {
+            "health": -6,
+            "happiness": -4,
+            "assets": -22000,
+            "legacyRepute": 6
+          }
+        }
+      ]
+    },
+    "life_84_will": {
+      "id": "life_84_will",
+      "title": "Eighty-four — the ledger and the heart",
+      "body": "Lawyers use calm voices. Your people use brave ones. What happens to the house, the scraps of dignity, the causes you cared about after headline season ended?",
+      "onEnter": {
+        "ageDelta": 8
+      },
+      "choices": [
+        {
+          "id": "will_family_first",
+          "label": "Family first — lean the estate toward kin, small gifts elsewhere",
+          "nextNodeId": "life_epilogue",
+          "deltas": {
+            "happiness": 4,
+            "legacyHeirReadiness": 14,
+            "legacyGenerosity": 2
+          },
+          "flagsAdd": ["estate_family_first"]
+        },
+        {
+          "id": "will_balanced",
+          "label": "Balanced will — heirs fed, charities named, arguments minimized",
+          "nextNodeId": "life_epilogue",
+          "deltas": {
+            "legacyHeirReadiness": 12,
+            "legacyGenerosity": 12,
+            "happiness": 6
+          },
+          "flagsAdd": ["estate_balanced_will"]
+        },
+        {
+          "id": "will_charity",
+          "label": "Charitable focus — most of what remains turns outward",
+          "nextNodeId": "life_epilogue",
+          "deltas": {
+            "legacyGenerosity": 18,
+            "legacyHeirReadiness": 4,
+            "happiness": 8
+          },
+          "flagsAdd": ["estate_charity_focus", "philanthropy_active"]
+        }
+      ]
+    },
+    "life_epilogue": {
+      "id": "life_epilogue",
+      "title": "The ledger rests",
+      "body": "The story pauses here — not because life is small, but because every telling needs an ending. What you planted shows up in other people's budgets, grudges, scholarships, and jokes. Rest.",
+      "onEnter": {
+        "ageDelta": 6
+      },
       "choices": []
     },
-    "ending_work": {
-      "id": "ending_work",
-      "title": "Chapter pause",
-      "body": "You stepped straight into work — early shifts, real bills, and skills that compound quietly. This demo ends here. Later episodes will add promotions, pivots, and maybe night classes. More chapters are coming.",
-      "onEnter": { "ageDelta": 0 },
+    "death_natural": {
+      "id": "death_natural",
+      "title": "Lights quiet down",
+      "body": "Health finally asked for something you couldn't negotiate. The numbers stop, the pain stops, the calendar stops. What you built and gave keeps moving without you — sometimes fairly, sometimes not. That part isn't yours to steer anymore.",
       "choices": []
     },
-    "ending_gap": {
-      "id": "ending_gap",
-      "title": "Chapter pause",
-      "body": "You bought time — odd jobs, cheap tickets, stories you will retell forever. This demo ends here. The next build might let you land back in school or double down on the road. More chapters are coming.",
-      "onEnter": { "ageDelta": 0 },
-      "choices": []
+    "prologue_north_star": {
+      "id": "prologue_north_star",
+      "title": "Before it starts",
+      "body": "Before the years start clicking by, one question sits like a compass in your chest. If you could fast-forward to the future, what do you want to be when you grow up?",
+      "choices": [
+        {
+          "id": "ns_engineer",
+          "label": "Engineer / builder — solve problems, ship things",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Engineer / builder",
+          "deltas": {
+            "intelligence": 2
+          }
+        },
+        {
+          "id": "ns_doctor",
+          "label": "Doctor / healer — help people when it matters",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Doctor / healer",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "ns_artist",
+          "label": "Artist / creator — make something that lasts",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Artist / creator",
+          "deltas": {
+            "happiness": 2,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "ns_social",
+          "label": "Social media creator — clips, trends, likes that own your mood",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 4,
+            "happiness": 1,
+            "intelligence": -2,
+            "health": -1
+          }
+        },
+        {
+          "id": "ns_entrepreneur",
+          "label": "Entrepreneur — take risks, build your own thing",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "happiness": 1,
+            "health": -1,
+            "assets": 15
+          }
+        },
+        {
+          "id": "ns_athlete",
+          "label": "Athlete — train hard, compete, win",
+          "nextNodeId": "start_age_8",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 2,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "ns_teacher",
+          "label": "Teacher / mentor — make others better",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 2,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "ns_traveler",
+          "label": "Traveler — collect places instead of stuff",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2,
+            "assets": -10
+          }
+        },
+        {
+          "id": "ns_unsure",
+          "label": "No idea yet — I'll figure it out",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "happiness": 1,
+            "health": 1
+          }
+        }
+      ]
+    },
+    "north_star_check_11": {
+      "id": "north_star_check_11",
+      "title": "North star check-in",
+      "body": "You catch yourself daydreaming about the future again. If you had to answer right now: what are you projected to be when you grow up?",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "north_star_check_11_engineer",
+          "label": "Still: Engineer / builder",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Engineer / builder",
+          "setNorthStar": "Engineer / builder",
+          "deltas": {
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_doctor",
+          "label": "Still: Doctor / healer",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Doctor / healer",
+          "setNorthStar": "Doctor / healer",
+          "deltas": {
+            "intelligence": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_artist",
+          "label": "Still: Artist / creator",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Artist / creator",
+          "setNorthStar": "Artist / creator",
+          "deltas": {
+            "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_11_entrepreneur_still",
+          "label": "Still: Entrepreneur",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Entrepreneur",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "happiness": 1,
+            "assets": 5
+          }
+        },
+        {
+          "id": "north_star_check_11_athlete_still",
+          "label": "Still: Athlete",
+          "nextNodeId": "age_12_school",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "showForNorthStar": "Athlete",
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_teacher_still",
+          "label": "Still: Teacher / mentor",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Teacher / mentor",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_traveler_still",
+          "label": "Still: Traveler",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Traveler",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_11_social_still",
+          "label": "Still: Social media creator",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Social media creator",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 2,
+            "happiness": 1,
+            "intelligence": -1
+          }
+        },
+        {
+          "id": "north_star_check_11_unsure_still",
+          "label": "Still: no fixed plan yet",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Undecided",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "health": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_entrepreneur",
+          "label": "Switch: Entrepreneur",
+          "nextNodeId": "age_12_school",
+          "hideForNorthStar": "Entrepreneur",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "health": -1,
+            "assets": 25
+          }
+        },
+        {
+          "id": "north_star_check_11_athlete",
+          "label": "Switch: Athlete",
+          "nextNodeId": "age_12_school",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "hideForNorthStar": "Athlete",
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_teacher",
+          "label": "Switch: Teacher / mentor",
+          "nextNodeId": "age_12_school",
+          "hideForNorthStar": "Teacher / mentor",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_11_traveler",
+          "label": "Switch: Traveler",
+          "nextNodeId": "age_12_school",
+          "hideForNorthStar": "Traveler",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2,
+            "assets": -20
+          }
+        },
+        {
+          "id": "north_star_check_11_social",
+          "label": "Switch: Social media creator — feed, metrics, and overnight fantasies",
+          "nextNodeId": "age_12_school",
+          "hideForNorthStar": "Social media creator",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 3,
+            "happiness": 1,
+            "intelligence": -1
+          }
+        },
+        {
+          "id": "north_star_check_11_unsure",
+          "label": "Honestly: still undecided",
+          "nextNodeId": "age_12_school",
+          "hideForNorthStar": "Undecided",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "health": 1
+          }
+        }
+      ]
+    },
+    "north_star_check_16": {
+      "id": "north_star_check_16",
+      "title": "North star check-in",
+      "body": "You catch yourself daydreaming about the future again. If you had to answer right now: what are you projected to be when you grow up?",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "north_star_check_16_engineer",
+          "label": "Still: Engineer / builder",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Engineer / builder",
+          "setNorthStar": "Engineer / builder",
+          "deltas": {
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_doctor",
+          "label": "Still: Doctor / healer",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Doctor / healer",
+          "setNorthStar": "Doctor / healer",
+          "deltas": {
+            "intelligence": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_artist",
+          "label": "Still: Artist / creator",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Artist / creator",
+          "setNorthStar": "Artist / creator",
+          "deltas": {
+            "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_16_entrepreneur_still",
+          "label": "Still: Entrepreneur",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Entrepreneur",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "happiness": 1,
+            "assets": 5
+          }
+        },
+        {
+          "id": "north_star_check_16_athlete_still",
+          "label": "Still: Athlete",
+          "nextNodeId": "year_17",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "showForNorthStar": "Athlete",
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_teacher_still",
+          "label": "Still: Teacher / mentor",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Teacher / mentor",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_traveler_still",
+          "label": "Still: Traveler",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Traveler",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_16_social_still",
+          "label": "Still: Social media creator",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Social media creator",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 3,
+            "happiness": 1,
+            "intelligence": -1,
+            "health": -1
+          }
+        },
+        {
+          "id": "north_star_check_16_unsure_still",
+          "label": "Still: no fixed plan yet",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Undecided",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "health": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_entrepreneur",
+          "label": "Switch: Entrepreneur",
+          "nextNodeId": "year_17",
+          "hideForNorthStar": "Entrepreneur",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "health": -1,
+            "assets": 25
+          }
+        },
+        {
+          "id": "north_star_check_16_athlete",
+          "label": "Switch: Athlete",
+          "nextNodeId": "year_17",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "hideForNorthStar": "Athlete",
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_teacher",
+          "label": "Switch: Teacher / mentor",
+          "nextNodeId": "year_17",
+          "hideForNorthStar": "Teacher / mentor",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_16_traveler",
+          "label": "Switch: Traveler",
+          "nextNodeId": "year_17",
+          "hideForNorthStar": "Traveler",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2,
+            "assets": -20
+          }
+        },
+        {
+          "id": "north_star_check_16_social",
+          "label": "Switch: Social media creator — chase the algorithm instead of a title",
+          "nextNodeId": "year_17",
+          "hideForNorthStar": "Social media creator",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 4,
+            "happiness": 2,
+            "intelligence": -2,
+            "health": -1
+          }
+        },
+        {
+          "id": "north_star_check_16_unsure",
+          "label": "Honestly: still undecided",
+          "nextNodeId": "year_17",
+          "hideForNorthStar": "Undecided",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "health": 1
+          }
+        }
+      ]
+    },
+    "north_star_check_21": {
+      "id": "north_star_check_21",
+      "title": "North star check-in",
+      "body": "You catch yourself daydreaming about the future again. If you had to answer right now: what are you projected to be when you grow up?",
+      "onEnter": {
+        "ageDelta": 1
+      },
+      "choices": [
+        {
+          "id": "north_star_check_21_engineer",
+          "label": "Still: Engineer / builder",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Engineer / builder",
+          "setNorthStar": "Engineer / builder",
+          "deltas": {
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_doctor",
+          "label": "Still: Doctor / healer",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Doctor / healer",
+          "setNorthStar": "Doctor / healer",
+          "deltas": {
+            "intelligence": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_artist",
+          "label": "Still: Artist / creator",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Artist / creator",
+          "setNorthStar": "Artist / creator",
+          "deltas": {
+            "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_21_entrepreneur_still",
+          "label": "Still: Entrepreneur",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Entrepreneur",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "happiness": 1,
+            "assets": 5
+          }
+        },
+        {
+          "id": "north_star_check_21_athlete_still",
+          "label": "Still: Athlete",
+          "nextNodeId": "invest_young_adult",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "showForNorthStar": "Athlete",
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_teacher_still",
+          "label": "Still: Teacher / mentor",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Teacher / mentor",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_traveler_still",
+          "label": "Still: Traveler",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Traveler",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_21_social_still",
+          "label": "Still: Social media creator",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Social media creator",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 4,
+            "happiness": 1,
+            "intelligence": -1,
+            "health": -1,
+            "assets": -10
+          }
+        },
+        {
+          "id": "north_star_check_21_unsure_still",
+          "label": "Still: no fixed plan yet",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Undecided",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "health": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_entrepreneur",
+          "label": "Switch: Entrepreneur",
+          "nextNodeId": "invest_young_adult",
+          "hideForNorthStar": "Entrepreneur",
+          "setNorthStar": "Entrepreneur",
+          "deltas": {
+            "health": -1,
+            "assets": 25
+          }
+        },
+        {
+          "id": "north_star_check_21_athlete",
+          "label": "Switch: Athlete",
+          "nextNodeId": "invest_young_adult",
+          "hideIfAnyFlags": [
+            "athlete_path_blocked"
+          ],
+          "hideForNorthStar": "Athlete",
+          "setNorthStar": "Athlete",
+          "deltas": {
+            "health": 1,
+            "happiness": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_teacher",
+          "label": "Switch: Teacher / mentor",
+          "nextNodeId": "invest_young_adult",
+          "hideForNorthStar": "Teacher / mentor",
+          "setNorthStar": "Teacher / mentor",
+          "deltas": {
+            "happiness": 1,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "north_star_check_21_traveler",
+          "label": "Switch: Traveler",
+          "nextNodeId": "invest_young_adult",
+          "hideForNorthStar": "Traveler",
+          "setNorthStar": "Traveler",
+          "deltas": {
+            "happiness": 2,
+            "assets": -20
+          }
+        },
+        {
+          "id": "north_star_check_21_social",
+          "label": "Switch: Social media creator — posters, reels, and brand deals in daydreams",
+          "nextNodeId": "invest_young_adult",
+          "hideForNorthStar": "Social media creator",
+          "setNorthStar": "Social media creator",
+          "deltas": {
+            "socialSkill": 5,
+            "happiness": 1,
+            "intelligence": -2,
+            "health": -2,
+            "assets": -30
+          }
+        },
+        {
+          "id": "north_star_check_21_unsure",
+          "label": "Honestly: still undecided",
+          "nextNodeId": "invest_young_adult",
+          "hideForNorthStar": "Undecided",
+          "setNorthStar": "Undecided",
+          "deltas": {
+            "health": 1
+          }
+        }
+      ]
+    },
+    "housing_decision": {
+      "id": "housing_decision",
+      "title": "Housing at 24",
+      "body": "You are staring at the hardest balance sheet of young adulthood: rent checks leak cash every month, but a mortgage ties you down and eats your assets up front. If you buy a place and rent it out, you still need somewhere to sleep — factor in your own cheap room or crash pad. Going unhoused skips the lease but chews through health and happiness.",
+      "choices": [
+        {
+          "id": "home_homeless",
+          "label": "Stay unhoused — couch surf, car nights, shelters when it breaks you (no lease, brutal toll)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 0,
+            "label": "Unhoused · insecure housing"
+          },
+          "deltas": {
+            "happiness": -16,
+            "health": -14,
+            "socialSkill": -3,
+            "assets": 900
+          },
+          "flagsAdd": [
+            "homeless_young"
+          ]
+        },
+        {
+          "id": "rent_only",
+          "label": "Keep renting — first/last + moving costs; no deed, predictable cash drain",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 0,
+            "label": "Renting · no owned home"
+          },
+          "deltas": {
+            "assets": -9600,
+            "happiness": -1,
+            "health": 0,
+            "intelligence": 1
+          }
+        },
+        {
+          "id": "buy_starter",
+          "label": "Buy a starter condo ~$285k · 5% down + closing (mortgage, tight budget)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 285000,
+            "label": "Condo · ~$285k · mortgage"
+          },
+          "deltas": {
+            "assets": -19000,
+            "happiness": 3,
+            "health": -2,
+            "intelligence": 1
+          },
+          "flagsAdd": [
+            "mortgage_starter"
+          ]
+        },
+        {
+          "id": "buy_townhouse",
+          "label": "Buy a townhouse ~$395k · 10% down (bigger mortgage, more space)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 395000,
+            "label": "Townhouse · ~$395k · mortgage"
+          },
+          "deltas": {
+            "assets": -46000,
+            "happiness": 4,
+            "health": -2
+          },
+          "flagsAdd": [
+            "mortgage_townhouse"
+          ]
+        },
+        {
+          "id": "buy_single_family",
+          "label": "Buy a single-family ~$495k · 15% down (classic mortgage path)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 495000,
+            "label": "House · ~$495k · mortgage"
+          },
+          "deltas": {
+            "assets": -83000,
+            "happiness": 5,
+            "health": -3
+          },
+          "flagsAdd": [
+            "mortgage_house"
+          ]
+        },
+        {
+          "id": "buy_fixer",
+          "label": "Buy a fixer ~$210k · 10% down + rehab fund (cheap purchase, heavy work)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 210000,
+            "label": "Fixer · ~$210k · mortgage + repairs"
+          },
+          "deltas": {
+            "assets": -36000,
+            "happiness": 2,
+            "health": -5,
+            "intelligence": 2
+          },
+          "flagsAdd": [
+            "mortgage_fixer"
+          ]
+        },
+        {
+          "id": "duplex_househack",
+          "label": "Duplex ~$540k · 20% down, live one unit and rent the other (mortgage + tenant income)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 540000,
+            "label": "Duplex · ~$540k · rented unit"
+          },
+          "deltas": {
+            "assets": -93800,
+            "happiness": 2,
+            "health": -3,
+            "intelligence": 1
+          },
+          "flagsAdd": [
+            "mortgage_duplex",
+            "landlord_side_rent"
+          ]
+        },
+        {
+          "id": "buy_rent_elsewhere",
+          "label": "Buy a small rental ~$360k · 15% down, but YOU rent a cheap room elsewhere (two housing bills)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 360000,
+            "label": "Rental owned · you rent a room elsewhere"
+          },
+          "deltas": {
+            "assets": -58200,
+            "happiness": -2,
+            "health": -4,
+            "intelligence": 2
+          },
+          "flagsAdd": [
+            "mortgage_landlord_remote",
+            "paying_rent_and_mortgage"
+          ]
+        },
+        {
+          "id": "rent_hack",
+          "label": "Rent a room in a shared house and sublet when you travel (side income, still paying rent)",
+          "nextNodeId": "young_adult_fork",
+          "setHome": {
+            "value": 0,
+            "label": "Renting · sublet side income"
+          },
+          "deltas": {
+            "assets": -4400,
+            "happiness": -2,
+            "health": -1,
+            "intelligence": 1
+          }
+        }
+      ]
     }
   }
 }

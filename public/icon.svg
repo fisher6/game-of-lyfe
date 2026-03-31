@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Game of Lyfe">
+  <defs>
+    <linearGradient id="g" x1="10" y1="6" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <path d="M32 26 17 46.5 32 52.5 47 46.5z" fill="#fafafa" stroke="#e4e4e7" stroke-width="1.25"/>
+  <path d="M32 29.5v20.5M23.5 45 32 49l8.5-4" stroke="#a1a1aa" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".85"/>
+  <circle cx="32" cy="21" r="6.25" fill="#fde68a"/>
+  <path d="M25.5 17.5c1.8-3.2 5.8-4.4 9.2-2.8 1.9.9 3.2 2.6 3.5 4.6" stroke="#854d0e" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <path d="M32 28.5 21 43.5" stroke="#f4f4f5" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
+</svg>
