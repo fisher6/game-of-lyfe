@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "nodes": {
     "character_setup": {
       "id": "character_setup",
@@ -1773,7 +1773,8 @@
             "health": -5,
             "assets": -22000,
             "legacyFamilyHarmony": 12,
-            "legacyHeirReadiness": 10
+            "legacyHeirReadiness": 10,
+            "kidsCountDelta": 2
           },
           "flagsAdd": ["has_kids"]
         },
@@ -1860,6 +1861,21 @@
             "assets": 15000,
             "legacyHeirReadiness": 12,
             "legacyGenerosity": -2
+          }
+        },
+        {
+          "id": "l50_second_child",
+          "label": "Make room for one more — another child, another season of yes",
+          "nextNodeId": "life_58_flow",
+          "requiredFlags": ["has_kids"],
+          "hideIfAnyFlags": ["no_kids"],
+          "deltas": {
+            "happiness": 4,
+            "health": -4,
+            "assets": -12000,
+            "legacyFamilyHarmony": 8,
+            "legacyHeirReadiness": 6,
+            "kidsCountDelta": 1
           }
         }
       ]
@@ -1964,6 +1980,21 @@
             "legacyRepute": 10,
             "legacyGenerosity": 4
           }
+        },
+        {
+          "id": "l68_grandkids",
+          "label": "Lean into grandkids — birthdays, chaos, borrowed energy",
+          "nextNodeId": "life_76_elder",
+          "requiredFlags": ["has_kids"],
+          "hideIfAnyFlags": ["has_grandkids", "no_kids"],
+          "deltas": {
+            "happiness": 8,
+            "health": -2,
+            "legacyFamilyHarmony": 10,
+            "assets": -2000,
+            "grandkidsCountDelta": 3
+          },
+          "flagsAdd": ["has_grandkids"]
         }
       ]
     },

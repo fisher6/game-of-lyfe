@@ -3,7 +3,7 @@ import type { LanguageLevel } from "./world";
 
 export type { LanguageLevel } from "./world";
 
-export const CONTENT_VERSION = 16;
+export const CONTENT_VERSION = 17;
 
 export type StatDelta = {
   health?: number;
@@ -47,6 +47,10 @@ export type StatDelta = {
    * Use `"nomad"` for no fixed base, or `"@birth"` to reset to birth country.
    */
   setResidenceCountryId?: string;
+  /** Add to number of children (clamped in engine). */
+  kidsCountDelta?: number;
+  /** Add to number of grandchildren (clamped in engine). */
+  grandkidsCountDelta?: number;
 };
 
 export type HomeSnapshot = {
@@ -190,6 +194,10 @@ export type GameState = {
    * Non-prone countries use 999 (never).
    */
   regionalConflictNextEventAge: number;
+  /** Children in household / story (incremented by midlife+ choices). */
+  kidsCount: number;
+  /** Grandchildren when story unlocks them (late-life choice). */
+  grandkidsCount: number;
 };
 
 export type ContentBundle = {

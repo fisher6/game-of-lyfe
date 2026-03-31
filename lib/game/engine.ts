@@ -22,6 +22,7 @@ import {
   mergeLanguageLevel,
   RESIDENCE_NOMAD_ID,
 } from "./world";
+import { annualDeathProbabilityFromState } from "./mortality";
 
 const MIN_STAT = 0;
 const MAX_STAT = 100;
@@ -32,15 +33,6 @@ export const DEATH_NODE_ID = "death_natural";
 export const LIFE_EPILOGUE_NODE_ID = "life_epilogue";
 
 const DEFAULT_LEGACY = 50;
-
-/** Extra health loss per birthday year by age band (on top of the baseline 35+ rule). */
-function healthDriftForBirthdayYear(year: number): number {
-  if (year < 35) return 0;
-  if (year < 51) return 1;
-  if (year < 61) return 2;
-  if (year < 71) return 3;
-  return 4;
-}
 
 export type EstateSummary = {
   estateGross: number;
@@ -119,12 +111,23 @@ export type LifeSuccessResult = {
 export function describeLifeFamilySummary(state: GameState): string[] {
   const lines: string[] = [];
   if (state.flags.includes("has_partner")) {
-    lines.push("Partner or committed relationship");
+    lines.push("Partner or spouse");
   }
-  if (state.flags.includes("has_kids")) {
+  if (state.kidsCount > 0) {
+    lines.push(
+      state.kidsCount === 1 ? "1 child" : `${state.kidsCount} children`,
+    );
+  } else if (state.flags.includes("has_kids")) {
     lines.push("Children in the picture");
   }
-  if (state.flags.includes("no_kids")) {
+  if (state.grandkidsCount > 0) {
+    lines.push(
+      state.grandkidsCount === 1
+        ? "1 grandchild"
+        : `${state.grandkidsCount} grandchildren`,
+    );
+  }
+  if (state.flags.includes("no_kids") && state.kidsCount === 0) {
     lines.push("Path leaned away from raising kids in this story");
   }
   if (state.flags.includes("caregiving_parent")) {
@@ -495,8 +498,9 @@ function applyIntelligenceLifestyleBonus(state: GameState): GameState {
 }
 
 /**
- * Baseline drift: adult happiness trends down; midlife adds health pressure.
- * Runs once per birthday in the age span (handles multi-year jumps).
+ * Per birthday: physique, happiness drift, then stochastic mortality from an
+ * OECD-style age curve scaled by residence + lifestyle (replaces flat health ladder).
+ * Multi-year jumps stop at the year of death if applicable.
  */
 function applyAgingDrift(
   state: GameState,
@@ -507,15 +511,25 @@ function applyAgingDrift(
   let next = { ...state };
   for (let y = ageBefore + 1; y <= ageAfter; y++) {
     next = applyBirthdayPhysique(next, y);
-    if (y >= 30) next = { ...next, happiness: clamp(next.happiness - 1, MIN_STAT, MAX_STAT) };
-    next = {
-      ...next,
-      health: clamp(
-        next.health - healthDriftForBirthdayYear(y),
-        MIN_STAT,
-        MAX_STAT,
-      ),
-    };
+    if (next.gamePhase === "dead") break;
+    if (y >= 30) {
+      next = {
+        ...next,
+        happiness: clamp(next.happiness - 1, MIN_STAT, MAX_STAT),
+      };
+    }
+    if (y >= 18 && next.gamePhase === "living") {
+      const p = annualDeathProbabilityFromState(next, y, computeBmi(next));
+      if (Math.random() < p) {
+        next = resolveFatalHealth({
+          ...next,
+          age: y,
+          health: 0,
+          deathCause: "natural",
+        });
+        break;
+      }
+    }
   }
   return next;
 }
@@ -600,6 +614,22 @@ function applyDelta(state: GameState, d: StatDelta | undefined): GameState {
   }
   if (d.heightInches !== undefined) heightInches += d.heightInches;
   if (d.weightLbs !== undefined) weightLbs += d.weightLbs;
+  let kidsCount = state.kidsCount;
+  let grandkidsCount = state.grandkidsCount;
+  if (d.kidsCountDelta !== undefined) {
+    kidsCount = clamp(
+      kidsCount + Math.trunc(d.kidsCountDelta),
+      0,
+      20,
+    );
+  }
+  if (d.grandkidsCountDelta !== undefined) {
+    grandkidsCount = clamp(
+      grandkidsCount + Math.trunc(d.grandkidsCountDelta),
+      0,
+      30,
+    );
+  }
   const physR = roundPhysique(
     clamp(heightInches, MIN_HEIGHT_IN, MAX_HEIGHT_IN),
     clamp(weightLbs, MIN_WEIGHT_LB, MAX_WEIGHT_LB),
@@ -671,6 +701,8 @@ function applyDelta(state: GameState, d: StatDelta | undefined): GameState {
     visitPlacesByCountry,
     languageLevels,
     residenceCountryId,
+    kidsCount,
+    grandkidsCount,
   };
 
   next = applyImmersionLanguageRules(next);
@@ -919,6 +951,8 @@ export function createInitialState(): GameState {
     languageLevels: { en: "native" },
     residenceCountryId: "us",
     regionalConflictNextEventAge: 999,
+    kidsCount: 0,
+    grandkidsCount: 0,
   };
 }
 
@@ -1314,6 +1348,8 @@ function patchLegacyDefaults(state: GameState): GameState {
     regionalConflictNextEventAge?: unknown;
     adultHeightInches?: unknown;
     physiqueNature?: unknown;
+    kidsCount?: unknown;
+    grandkidsCount?: unknown;
   };
   const phase: GameState["gamePhase"] =
     raw.gamePhase === "dead" ? "dead" : "living";
@@ -1442,6 +1478,19 @@ function patchLegacyDefaults(state: GameState): GameState {
           isRegionalConflictProneCountry(exposureCountry)
         ? Math.min(95, Math.max(base.age + 1, 13))
         : 999;
+  let kidsCount =
+    typeof raw.kidsCount === "number" && Number.isFinite(raw.kidsCount)
+      ? clamp(Math.floor(raw.kidsCount), 0, 20)
+      : 0;
+  let grandkidsCount =
+    typeof raw.grandkidsCount === "number" &&
+    Number.isFinite(raw.grandkidsCount)
+      ? clamp(Math.floor(raw.grandkidsCount), 0, 30)
+      : 0;
+  if (kidsCount === 0 && base.flags.includes("has_kids")) kidsCount = 1;
+  if (grandkidsCount === 0 && base.flags.includes("has_grandkids")) {
+    grandkidsCount = 1;
+  }
   return {
     ...base,
     legacyFamilyHarmony,
@@ -1459,6 +1508,8 @@ function patchLegacyDefaults(state: GameState): GameState {
     visitPlacesByCountry,
     languageLevels,
     regionalConflictNextEventAge,
+    kidsCount,
+    grandkidsCount,
     gamePhase: phase,
     ...(deathCause ? { deathCause } : {}),
   };
@@ -1578,6 +1629,8 @@ function migrateLegacyState(state: GameState): GameState {
     languageLevels: { en: "native" },
     gamePhase: "living",
     regionalConflictNextEventAge: 999,
+    kidsCount: 0,
+    grandkidsCount: 0,
     ...(avatarNice ? { avatarNice } : {}),
   };
   return clampMinorFinances(
@@ -1770,6 +1823,20 @@ export function validateStateShape(data: unknown): GameState | null {
         ? Math.min(95, Math.max(o.age + 1, 13))
         : 999;
 
+  const flagsArr = o.flags as string[];
+  let kidsCount =
+    typeof o.kidsCount === "number" && Number.isFinite(o.kidsCount)
+      ? clamp(Math.floor(o.kidsCount), 0, 20)
+      : 0;
+  let grandkidsCount =
+    typeof o.grandkidsCount === "number" && Number.isFinite(o.grandkidsCount)
+      ? clamp(Math.floor(o.grandkidsCount), 0, 30)
+      : 0;
+  if (kidsCount === 0 && flagsArr.includes("has_kids")) kidsCount = 1;
+  if (grandkidsCount === 0 && flagsArr.includes("has_grandkids")) {
+    grandkidsCount = 1;
+  }
+
   const parsed: GameState = {
     characterName,
     avatar: normalizeAvatar(o.avatar),
@@ -1783,7 +1850,7 @@ export function validateStateShape(data: unknown): GameState | null {
     debt,
     homeValue,
     homeLabel,
-    flags: o.flags as string[],
+    flags: flagsArr,
     northStar,
     lifeLog,
     achievementIds,
@@ -1804,6 +1871,8 @@ export function validateStateShape(data: unknown): GameState | null {
     visitPlacesByCountry,
     languageLevels,
     regionalConflictNextEventAge,
+    kidsCount,
+    grandkidsCount,
     gamePhase,
     ...(deathCause ? { deathCause } : {}),
     ...(avatarNice ? { avatarNice } : {}),

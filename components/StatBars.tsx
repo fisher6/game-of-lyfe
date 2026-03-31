@@ -50,6 +50,10 @@ type StatBarsProps = {
   residenceCountryId: string;
   countriesVisited: string[];
   languageLevels: Record<string, LanguageLevel>;
+  /** Story flags (partner / kids unlocks). */
+  flags: string[];
+  kidsCount: number;
+  grandkidsCount: number;
   choicePanel?: ReactNode;
 };
 
@@ -148,6 +152,9 @@ export function StatBars({
   residenceCountryId,
   countriesVisited,
   languageLevels,
+  flags,
+  kidsCount,
+  grandkidsCount,
   choicePanel,
 }: StatBarsProps) {
   const [lifeTab, setLifeTab] = useState<LifePanelTab>("summary");
@@ -285,6 +292,38 @@ export function StatBars({
               Est. value ${homeValue.toLocaleString("en-US")}
             </p>
           ) : null}
+          {(flags.includes("has_partner") ||
+            kidsCount > 0 ||
+            grandkidsCount > 0 ||
+            flags.includes("has_kids")) && (
+            <dl className="mt-2 space-y-1 border-t border-zinc-200/60 pt-2 text-[10px] dark:border-zinc-700/60">
+              {flags.includes("has_partner") ? (
+                <div className="flex justify-between gap-2">
+                  <dt className="shrink-0 text-zinc-500">Partner</dt>
+                  <dd className="text-right font-medium text-zinc-800 dark:text-zinc-200">
+                    Married
+                  </dd>
+                </div>
+              ) : null}
+              {(kidsCount > 0 || flags.includes("has_kids")) &&
+              !(flags.includes("no_kids") && kidsCount === 0) ? (
+                <div className="flex justify-between gap-2">
+                  <dt className="shrink-0 text-zinc-500">Kids</dt>
+                  <dd className="tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
+                    {kidsCount > 0 ? kidsCount : "—"}
+                  </dd>
+                </div>
+              ) : null}
+              {grandkidsCount > 0 ? (
+                <div className="flex justify-between gap-2">
+                  <dt className="shrink-0 text-zinc-500">Grandkids</dt>
+                  <dd className="tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
+                    {grandkidsCount}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          )}
         </div>
         <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-wide text-zinc-500">

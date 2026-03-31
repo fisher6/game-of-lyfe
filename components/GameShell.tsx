@@ -360,6 +360,9 @@ export function GameShell({ initialState }: GameShellProps) {
             residenceCountryId={state.residenceCountryId}
             countriesVisited={state.countriesVisited}
             languageLevels={state.languageLevels}
+            flags={state.flags}
+            kidsCount={state.kidsCount}
+            grandkidsCount={state.grandkidsCount}
             choicePanel={<StatFloatEffects diff={statFx} />}
           />
 

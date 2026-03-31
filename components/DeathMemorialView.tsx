@@ -33,6 +33,8 @@ function deathCauseLabel(cause: string | undefined): string | null {
   if (!cause || !cause.trim()) return null;
   const c = cause.trim().toLowerCase();
   if (c === "health") return "Your health gave out.";
+  if (c === "natural")
+    return "A natural end — about the age distribution you'd expect where you lived.";
   if (c === "killed_in_service")
     return "Killed in military or national service.";
   return `Cause: ${cause.slice(0, 120)}`;
