@@ -1,26 +1,715 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Windows 2000 Design Tokens
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core palette */
+  --win-teal:        #008080;   /* Classic W2k desktop teal */
+  --win-silver:      #d4d0c8;   /* Window chrome / button face */
+  --win-silver-dark: #808080;   /* Shadow edge */
+  --win-silver-light:#ffffff;   /* Highlight edge */
+  --win-navy:        #000080;   /* Title bar start colour */
+  --win-navy-mid:    #1084d0;   /* Title bar end colour */
+  --win-black:       #000000;
+  --win-white:       #ffffff;
+  --win-text:        #000000;
+
+  /* Semantic tokens */
+  --background: var(--win-teal);
+  --foreground: var(--win-text);
+  --radius: 0px;
 }
 
+/* ============================================================
+   Base / Reset
+   ============================================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "MS Sans Serif", "Arial", system-ui, sans-serif;
+  --font-mono: "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  height: 100%;
+  overflow: hidden; /* desktop doesn't scroll */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background: var(--win-teal);
+  color: var(--win-text);
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 11px;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================================
+   Desktop
+   ============================================================ */
+.win2k-desktop {
+  position: fixed;
+  inset: 0;
+  bottom: 28px; /* leave space for taskbar */
+  background: #008080;
+  /* Subtle teal tile pattern */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.03) 0px,
+    rgba(0,0,0,0.03) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 16px;
+}
+
+/* ============================================================
+   Desktop Icons
+   ============================================================ */
+.desktop-icons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.win2k-desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+  width: 72px;
+}
+
+.win2k-desktop-icon-img {
+  font-size: 32px;
+  line-height: 1;
+  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.5));
+}
+
+.win2k-desktop-icon-label {
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* ============================================================
+   Window chrome helpers
+   ============================================================ */
+/* Raised bevel */
+.bevel-raised {
+  border-top:    2px solid var(--win-silver-light);
+  border-left:   2px solid var(--win-silver-light);
+  border-right:  2px solid var(--win-silver-dark);
+  border-bottom: 2px solid var(--win-silver-dark);
+}
+
+/* Sunken bevel */
+.bevel-sunken {
+  border-top:    2px solid var(--win-silver-dark);
+  border-left:   2px solid var(--win-silver-dark);
+  border-right:  2px solid var(--win-silver-light);
+  border-bottom: 2px solid var(--win-silver-light);
+}
+
+/* ============================================================
+   Main Window
+   ============================================================ */
+.win2k-window {
+  background: var(--win-silver);
+  border-top:    2px solid var(--win-silver-light);
+  border-left:   2px solid var(--win-silver-light);
+  border-right:  2px solid var(--win-silver-dark);
+  border-bottom: 2px solid var(--win-silver-dark);
+  width: 620px;
+  max-width: 96vw;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+}
+
+.win2k-window-small {
+  width: 380px;
+}
+
+/* ============================================================
+   Title Bar
+   ============================================================ */
+.win2k-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, var(--win-navy) 0%, var(--win-navy-mid) 100%);
+  padding: 3px 4px;
+  gap: 6px;
+  user-select: none;
+}
+
+.win2k-titlebar-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.win2k-titlebar-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.win2k-titlebar-text {
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win2k-titlebar-buttons {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.win2k-btn-chrome {
+  width: 18px;
+  height: 16px;
+  background: var(--win-silver);
+  border-top:   2px solid var(--win-silver-light);
+  border-left:  2px solid var(--win-silver-light);
+  border-right: 2px solid var(--win-silver-dark);
+  border-bottom:2px solid var(--win-silver-dark);
+  color: var(--win-black);
+  font-size: 9px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.win2k-btn-chrome:active {
+  border-top:   2px solid var(--win-silver-dark);
+  border-left:  2px solid var(--win-silver-dark);
+  border-right: 2px solid var(--win-silver-light);
+  border-bottom:2px solid var(--win-silver-light);
+}
+
+.win2k-btn-close {
+  background: var(--win-silver);
+}
+
+/* ============================================================
+   Menu Bar
+   ============================================================ */
+.win2k-menubar {
+  background: var(--win-silver);
+  border-bottom: 1px solid var(--win-silver-dark);
+  padding: 2px 4px;
+  display: flex;
+  gap: 0;
+}
+
+.win2k-menu-item {
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: default;
+}
+
+.win2k-menu-item:hover {
+  background: var(--win-navy);
+  color: #fff;
+}
+
+/* ============================================================
+   Window Content Layout
+   ============================================================ */
+.win2k-content {
+  display: flex;
+  flex: 1;
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.win2k-sidebar {
+  width: 140px;
+  flex-shrink: 0;
+  background: var(--win-navy);
+  display: flex;
+  flex-direction: column;
+}
+
+.win2k-sidebar-header {
+  background: linear-gradient(to bottom, var(--win-navy-mid), var(--win-navy));
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 10px 10px 14px;
+  text-align: center;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.win2k-sidebar-body {
+  padding: 10px 8px;
+  flex: 1;
+}
+
+.win2k-sidebar-text {
+  color: #c8d8f0;
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.win2k-sidebar-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+  margin: 6px 0;
+}
+
+.win2k-sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.win2k-link {
+  color: #a8c8f0;
+  font-size: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+  display: block;
+}
+
+.win2k-link:hover {
+  color: #fff;
+}
+
+/* ============================================================
+   Main content area
+   ============================================================ */
+.win2k-main {
+  flex: 1;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--win-silver);
+  overflow: auto;
+}
+
+.win2k-banner {
+  border-bottom: 1px solid var(--win-silver-dark);
+  padding-bottom: 8px;
+  margin-bottom: 2px;
+}
+
+.win2k-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--win-navy);
+  margin: 0 0 2px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+}
+
+.win2k-subtitle {
+  font-size: 10px;
+  color: #666;
+  margin: 0;
+}
+
+.win2k-inset-box {
+  background: var(--win-white);
+  border-top:   2px solid var(--win-silver-dark);
+  border-left:  2px solid var(--win-silver-dark);
+  border-right: 2px solid var(--win-silver-light);
+  border-bottom:2px solid var(--win-silver-light);
+  padding: 10px 12px;
+}
+
+.win2k-body-text {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--win-text);
+  margin: 0;
+}
+
+.win2k-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #ffffc0;
+  border: 1px solid #c0c000;
+  padding: 6px 8px;
+}
+
+.win2k-info-badge {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.win2k-info-text {
+  font-size: 11px;
+  color: var(--win-text);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.win2k-button-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.win2k-btn {
+  height: 26px;
+  padding: 0 20px;
+  font-size: 11px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.win2k-btn-primary {
+  background: var(--win-silver);
+  color: var(--win-text);
+  border-top:    2px solid var(--win-silver-light);
+  border-left:   2px solid var(--win-silver-light);
+  border-right:  2px solid var(--win-silver-dark);
+  border-bottom: 2px solid var(--win-silver-dark);
+  font-weight: bold;
+  /* default button extra outline */
+  outline: 1px solid var(--win-black);
+  outline-offset: 1px;
+}
+
+.win2k-btn-primary:hover {
+  background: #e8e4dc;
+}
+
+.win2k-btn-primary:active {
+  border-top:    2px solid var(--win-silver-dark);
+  border-left:   2px solid var(--win-silver-dark);
+  border-right:  2px solid var(--win-silver-light);
+  border-bottom: 2px solid var(--win-silver-light);
+}
+
+.win2k-btn-secondary {
+  background: var(--win-silver);
+  color: var(--win-text);
+  border-top:    2px solid var(--win-silver-light);
+  border-left:   2px solid var(--win-silver-light);
+  border-right:  2px solid var(--win-silver-dark);
+  border-bottom: 2px solid var(--win-silver-dark);
+}
+
+.win2k-btn-secondary:hover {
+  background: #e8e4dc;
+}
+
+.win2k-btn-secondary:active {
+  border-top:    2px solid var(--win-silver-dark);
+  border-left:   2px solid var(--win-silver-dark);
+  border-right:  2px solid var(--win-silver-light);
+  border-bottom: 2px solid var(--win-silver-light);
+}
+
+.win2k-signed-in {
+  font-size: 10px;
+  color: #444;
+  padding: 4px 6px;
+  background: var(--win-white);
+  border: 1px solid var(--win-silver-dark);
+}
+
+/* ============================================================
+   Status Bar
+   ============================================================ */
+.win2k-statusbar {
+  display: flex;
+  background: var(--win-silver);
+  border-top: 1px solid var(--win-silver-dark);
+  padding: 2px 4px;
+  gap: 4px;
+}
+
+.win2k-status-section {
+  font-size: 10px;
+  color: var(--win-text);
+  border-top:   1px solid var(--win-silver-dark);
+  border-left:  1px solid var(--win-silver-dark);
+  border-right: 1px solid var(--win-silver-light);
+  border-bottom:1px solid var(--win-silver-light);
+  padding: 1px 6px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   Dialog box
+   ============================================================ */
+.win2k-dialog-body {
+  padding: 16px;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.win2k-dialog-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.win2k-dialog-text {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 0 4px;
+}
+
+.win2k-dialog-subtext {
+  font-size: 11px;
+  color: #444;
+  margin: 0;
+}
+
+.win2k-dialog-footer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--win-silver-dark);
+}
+
+/* ============================================================
+   Restore hint
+   ============================================================ */
+.win2k-restore-hint {
+  color: #fff;
+  font-size: 11px;
+  text-shadow: 1px 1px 2px #000;
+  background: rgba(0,0,0,0.3);
+  padding: 8px 16px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* ============================================================
+   Taskbar
+   ============================================================ */
+.win2k-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--win-silver);
+  border-top: 2px solid var(--win-silver-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  z-index: 100;
+}
+
+.win2k-start-btn {
+  height: 22px;
+  padding: 0 8px;
+  background: var(--win-silver);
+  border-top:   2px solid var(--win-silver-light);
+  border-left:  2px solid var(--win-silver-light);
+  border-right: 2px solid var(--win-silver-dark);
+  border-bottom:2px solid var(--win-silver-dark);
+  font-size: 11px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.win2k-start-btn:active,
+.win2k-start-btn-active {
+  border-top:   2px solid var(--win-silver-dark);
+  border-left:  2px solid var(--win-silver-dark);
+  border-right: 2px solid var(--win-silver-light);
+  border-bottom:2px solid var(--win-silver-light);
+  background: var(--win-silver);
+}
+
+.win2k-start-logo {
+  font-size: 14px;
+}
+
+.win2k-taskbar-divider {
+  width: 2px;
+  height: 20px;
+  border-left: 1px solid var(--win-silver-dark);
+  border-right: 1px solid var(--win-silver-light);
+  margin: 0 2px;
+}
+
+.win2k-taskbar-window-btn {
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  background: var(--win-silver);
+  border-top:   2px solid var(--win-silver-dark);
+  border-left:  2px solid var(--win-silver-dark);
+  border-right: 2px solid var(--win-silver-light);
+  border-bottom:2px solid var(--win-silver-light);
+  min-width: 120px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win2k-taskbar-window-btn-active {
+  border-top:   2px solid var(--win-silver-light);
+  border-left:  2px solid var(--win-silver-light);
+  border-right: 2px solid var(--win-silver-dark);
+  border-bottom:2px solid var(--win-silver-dark);
+}
+
+.win2k-taskbar-spacer {
+  flex: 1;
+}
+
+.win2k-tray {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-top:   1px solid var(--win-silver-dark);
+  border-left:  1px solid var(--win-silver-dark);
+  border-right: 1px solid var(--win-silver-light);
+  border-bottom:1px solid var(--win-silver-light);
+  padding: 2px 8px;
+  height: 22px;
+}
+
+.win2k-tray-icon {
+  font-size: 14px;
+  cursor: default;
+}
+
+.win2k-tray-time {
+  font-size: 11px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+}
+
+/* ============================================================
+   Start Menu
+   ============================================================ */
+.win2k-start-menu {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  width: 220px;
+  background: var(--win-silver);
+  border-top:   2px solid var(--win-silver-light);
+  border-left:  2px solid var(--win-silver-light);
+  border-right: 2px solid var(--win-silver-dark);
+  border-bottom:2px solid var(--win-silver-dark);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+.win2k-start-menu-header {
+  background: linear-gradient(to bottom, var(--win-navy-mid), var(--win-navy));
+  padding: 8px;
+}
+
+.win2k-start-menu-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.win2k-start-menu-avatar {
+  font-size: 28px;
+}
+
+.win2k-start-menu-username {
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.win2k-start-menu-items {
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.win2k-start-menu-item {
+  padding: 5px 16px;
+  font-size: 11px;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.win2k-start-menu-item:hover {
+  background: var(--win-navy);
+  color: #fff;
+}
+
+.win2k-start-menu-divider {
+  height: 1px;
+  background: var(--win-silver-dark);
+  margin: 4px 8px;
+}
+
+.win2k-start-menu-shutdown {
+  color: #800000;
+  font-weight: bold;
+}
+
+.win2k-start-menu-shutdown:hover {
+  background: var(--win-navy);
+  color: #fff;
+}
+
+/* ============================================================
+   Status bar inner
+   ============================================================ */
+.win2k-status-bar-inner {
+  font-size: 11px;
+  color: #888;
+  padding: 4px 8px;
 }
