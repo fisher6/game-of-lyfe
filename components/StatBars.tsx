@@ -10,6 +10,7 @@ import {
   displayNorthStar,
 } from "@/lib/i18n/state-display-he";
 import { computeBmi } from "@/lib/game/engine";
+import { calendarYearForStoryAge } from "@/lib/game/story-calendar-year";
 import type {
   AvatarLook,
   GameState,
@@ -187,6 +188,7 @@ export function StatBars({
   const { t, achievement, numberLocale, locale } = useLocale();
   const [lifeTab, setLifeTab] = useState<LifePanelTab>("summary");
   const displayName = characterName.trim() || "…";
+  const storyCalendarYear = calendarYearForStoryAge(age);
 
   function levelLabel(l: LanguageLevel): string {
     if (l === "native") return t("level.native");
@@ -255,11 +257,25 @@ export function StatBars({
             </p>
           ) : null}
         </div>
-        <div>
-          <p className="text-xs text-zinc-500">{t("life.age")}</p>
-          <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
-            {age}
-          </p>
+        <div
+          className="grid max-w-[12rem] grid-cols-2 gap-x-4 gap-y-0.5"
+          title={t("death.ageAndYearTitle")}
+        >
+          <div className="min-w-0">
+            <p className="text-xs text-zinc-500">{t("life.age")}</p>
+            <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
+              {age}
+            </p>
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs text-zinc-500">{t("life.storyYear")}</p>
+            <p
+              className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-50"
+              aria-label={t("life.storyYearAria", { year: storyCalendarYear })}
+            >
+              {storyCalendarYear}
+            </p>
+          </div>
         </div>
         <div className="rounded-lg border border-zinc-200/60 bg-zinc-50/40 px-2 py-1.5 dark:border-zinc-700/60 dark:bg-zinc-900/30">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-zinc-500">

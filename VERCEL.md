@@ -20,7 +20,7 @@ Add these in the Vercel project **Settings → Environment Variables** (Producti
 
 Copy [.env.example](.env.example) for local development.
 
-The **Skip ~10 yrs** demo control on `/play` appears only when the in-game character name is `admin` (any case) or `מנהל`.
+**Skip ~10 yrs** and **Undo** are available only on **`/play/admin`** (same signed-in save as `/play`). The path is not a security boundary — treat as a convenience for demos.
 
 ## Supabase database URL
 

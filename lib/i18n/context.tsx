@@ -11,7 +11,6 @@ import {
 } from "react";
 import { localizedAchievement } from "@/lib/i18n/achievement";
 import type { AppLocale } from "@/lib/i18n/types";
-import { LOCALE_STORAGE_KEY } from "@/lib/i18n/types";
 import { interpolate, uiString } from "@/lib/i18n/ui";
 
 type LocaleContextValue = {
@@ -25,35 +24,17 @@ type LocaleContextValue = {
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
+  /** English on every load; Hebrew applies only for the current session (not persisted). */
   const [locale, setLocaleState] = useState<AppLocale>("en");
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    queueMicrotask(() => {
-      try {
-        const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-        if (stored === "he" || stored === "en") setLocaleState(stored);
-      } catch {
-        /* ignore */
-      }
-      setReady(true);
-    });
-  }, []);
 
   const setLocale = useCallback((l: AppLocale) => {
     setLocaleState(l);
-    try {
-      localStorage.setItem(LOCALE_STORAGE_KEY, l);
-    } catch {
-      /* ignore */
-    }
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
     document.documentElement.lang = locale === "he" ? "he" : "en";
     document.documentElement.dir = locale === "he" ? "rtl" : "ltr";
-  }, [locale, ready]);
+  }, [locale]);
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {

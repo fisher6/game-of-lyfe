@@ -5,6 +5,7 @@ import { LegacyTrackingPanel } from "@/components/LegacyTrackingPanel";
 import { LifeReviewCard } from "@/components/LifeReviewCard";
 import { ACHIEVEMENTS } from "@/lib/game/achievements";
 import type { GameState, LanguageLevel } from "@/lib/game/types";
+import { calendarYearForStoryAge } from "@/lib/game/story-calendar-year";
 import { computeLifeSuccessScore } from "@/lib/game/engine";
 import { useLocale } from "@/lib/i18n/context";
 import {
@@ -46,6 +47,7 @@ export function DeathMemorialView({
   const name = state.characterName.trim() || t("death.you");
   const ls = computeLifeSuccessScore(state);
   const causeLine = deathCauseLabel(state.deathCause, t);
+  const deathCalendarYear = calendarYearForStoryAge(state.age);
 
   function levelWord(l: LanguageLevel): string {
     if (l === "native") return t("level.native");
@@ -81,6 +83,16 @@ export function DeathMemorialView({
             </div>
           </div>
         </div>
+
+        <p
+          className="mx-auto mt-4 max-w-sm text-center text-sm font-medium tabular-nums text-zinc-700 dark:text-zinc-300"
+          title={t("death.ageAndYearTitle")}
+        >
+          {t("death.ageAndYear", {
+            age: state.age,
+            year: deathCalendarYear,
+          })}
+        </p>
 
         <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-rose-700 dark:text-rose-400">
           {t("death.gameOver")}

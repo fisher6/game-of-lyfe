@@ -28,19 +28,18 @@ import {
 } from "@/lib/game/engine";
 import { resetGame, saveGame } from "@/app/play/actions";
 
+const ADMIN_UNDO_CAP = 100;
+
 type GameShellProps = {
   initialState: GameState;
+  /** `/play/admin` — skip-years + step undo (same cloud save as `/play`). */
+  adminMode?: boolean;
 };
 
-/** “Skip ~10 yrs” only for character names `admin` (any case) or `מנהל`. */
-function canShowAdminSkip(characterName: string): boolean {
-  const n = characterName.trim();
-  if (!n) return false;
-  if (n.toLowerCase() === "admin") return true;
-  return n === "מנהל";
-}
-
-export function GameShell({ initialState }: GameShellProps) {
+export function GameShell({
+  initialState,
+  adminMode = false,
+}: GameShellProps) {
   const { t, achievement, locale } = useLocale();
   const [state, setState] = useState<GameState>(initialState);
   const [saving, setSaving] = useState(false);
@@ -56,6 +55,20 @@ export function GameShell({ initialState }: GameShellProps) {
   const skipSaveRef = useRef(true);
   const achievementBootRef = useRef(true);
   const prevAchievementLenRef = useRef(0);
+  const undoStackRef = useRef<GameState[]>([]);
+  const [undoDepth, setUndoDepth] = useState(0);
+
+  const pushUndoSnapshot = useCallback(
+    (s: GameState) => {
+      if (!adminMode) return;
+      undoStackRef.current.push(structuredClone(s));
+      if (undoStackRef.current.length > ADMIN_UNDO_CAP) {
+        undoStackRef.current.shift();
+      }
+      setUndoDepth(undoStackRef.current.length);
+    },
+    [adminMode],
+  );
 
   const node = getVisibleNode(state, locale);
   const terminal = isAtTerminal(state);
@@ -103,28 +116,42 @@ export function GameShell({ initialState }: GameShellProps) {
   const onChoose = useCallback(
     (index: number) => {
       setState((s) => {
+        pushUndoSnapshot(s);
         const { next, diff } = applyChoiceWithPreview(s, index, locale);
         queueMicrotask(() => setStatFx(diff));
         return next;
       });
     },
-    [locale],
+    [locale, pushUndoSnapshot],
   );
 
   const onAdminSkip10 = useCallback(() => {
     setState((s) => {
+      pushUndoSnapshot(s);
       const before = s;
       const next = adminSkipYears(s, 10, locale);
       queueMicrotask(() => setStatFx(diffStatSnapshot(before, next)));
       return next;
     });
-  }, [locale]);
+  }, [locale, pushUndoSnapshot]);
+
+  const onUndo = useCallback(() => {
+    if (!adminMode) return;
+    const stack = undoStackRef.current;
+    if (stack.length === 0) return;
+    const prev = stack.pop()!;
+    setUndoDepth(stack.length);
+    setStatFx(null);
+    setState(prev);
+  }, [adminMode]);
 
   const performRestart = useCallback(() => {
     void (async () => {
       try {
         await resetGame();
         setStatFx(null);
+        undoStackRef.current = [];
+        setUndoDepth(0);
         setRestartConfirmOpen(false);
         setSetupExiting(false);
         setMainAnimatingIn(false);
@@ -140,8 +167,9 @@ export function GameShell({ initialState }: GameShellProps) {
       if (saving) return;
       setSetupExiting(true);
       window.setTimeout(() => {
-        setState((s) =>
-          completeCharacterSetup(
+        setState((s) => {
+          pushUndoSnapshot(s);
+          return completeCharacterSetup(
             s,
             {
               characterName: name,
@@ -150,14 +178,14 @@ export function GameShell({ initialState }: GameShellProps) {
               homeCountryId: payload.homeCountryId,
             },
             locale,
-          ),
-        );
+          );
+        });
         setSetupExiting(false);
         setMainAnimatingIn(true);
         window.setTimeout(() => setMainAnimatingIn(false), 480);
       }, 300);
     },
-    [saving, locale],
+    [saving, locale, pushUndoSnapshot],
   );
 
   useEffect(() => {
@@ -298,21 +326,33 @@ export function GameShell({ initialState }: GameShellProps) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <LanguageSwitcher />
-          {canShowAdminSkip(state.characterName) &&
-          !terminal &&
-          state.gamePhase === "living" ? (
-            <button
-              type="button"
-              title={t("nav.skip10Title")}
-              onClick={() => {
-                if (saving) return;
-                onAdminSkip10();
-              }}
-              disabled={saving}
-              className="rounded-full border border-amber-500/80 bg-amber-50 px-4 py-1.5 text-sm font-medium text-amber-950 hover:bg-amber-100 disabled:opacity-50 dark:border-amber-600/80 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/60"
-            >
-              {t("nav.skip10")}
-            </button>
+          {adminMode && !terminal && state.gamePhase === "living" ? (
+            <>
+              <button
+                type="button"
+                title={t("nav.undoTitle")}
+                onClick={() => {
+                  if (saving) return;
+                  onUndo();
+                }}
+                disabled={saving || undoDepth === 0}
+                className="rounded-full border border-sky-500/80 bg-sky-50 px-4 py-1.5 text-sm font-medium text-sky-950 hover:bg-sky-100 disabled:opacity-50 dark:border-sky-600/80 dark:bg-sky-950/50 dark:text-sky-100 dark:hover:bg-sky-900/60"
+              >
+                {t("nav.undo")}
+              </button>
+              <button
+                type="button"
+                title={t("nav.skip10Title")}
+                onClick={() => {
+                  if (saving) return;
+                  onAdminSkip10();
+                }}
+                disabled={saving}
+                className="rounded-full border border-amber-500/80 bg-amber-50 px-4 py-1.5 text-sm font-medium text-amber-950 hover:bg-amber-100 disabled:opacity-50 dark:border-amber-600/80 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/60"
+              >
+                {t("nav.skip10")}
+              </button>
+            </>
           ) : null}
           <button
             type="button"
