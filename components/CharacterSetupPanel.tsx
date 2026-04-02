@@ -64,7 +64,7 @@ export function CharacterSetupPanel({
     { value: 0, label: t("hair.black") },
     { value: 1, label: t("hair.brown") },
     { value: 2, label: t("hair.blonde") },
-    { value: 3, label: t("hair.ginger") },
+    { value: 3, label: t("hair.red") },
   ];
 
   const onPickSex = (v: Sex) => {

@@ -35,12 +35,12 @@ export const SETUP_HAIR_PRESET_COUNT =
 /** Numbered hair styles in the creator (three cuts + beanie + turban + glasses). */
 export const SETUP_HAIR_STYLE_COUNT = 6;
 
-/** Creator palette: black, brown, blonde, ginger (maps to `AvatarLook.hairColor` 0–3). */
+/** Creator palette: black, brown, blonde, red (maps to `AvatarLook.hairColor` 0–3). */
 export const SETUP_HAIR_COLOR_LABELS = [
   "Black",
   "Brown",
   "Blonde",
-  "Ginger",
+  "Red",
 ] as const;
 export const SETUP_HAIR_COLOR_COUNT = SETUP_HAIR_COLOR_LABELS.length;
 
