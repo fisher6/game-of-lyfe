@@ -16,7 +16,10 @@ Add these in the Vercel project **Settings → Environment Variables** (Producti
 | `AUTH_SECRET` | Random secret; generate locally with `openssl rand -base64 32`. Required in production. |
 | `AUTH_GOOGLE_ID` | Google Cloud OAuth **Client ID** (Web application). |
 | `AUTH_GOOGLE_SECRET` | Google Cloud **Client secret**. |
+<<<<<<< HEAD
 | `AUTH_URL` | **Recommended on Vercel.** Canonical public site URL with **no trailing slash**, e.g. `https://game-of-lyfe.vercel.app`. Avoids OAuth redirect surprises on previews vs production. |
+=======
+>>>>>>> d45af4a2ad1895680edb040be2ab44454cdc4cb9
 | `NEXT_PUBLIC_GAME_ADMIN_TOOLS` | Optional. Set to `1` to show the **Skip ~10 yrs** demo button on `/play`. Omit on production unless you want that exposed. Local dev shows it automatically. |
 
 Copy [.env.example](.env.example) for local development.
