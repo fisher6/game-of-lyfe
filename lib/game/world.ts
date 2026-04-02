@@ -1,5 +1,7 @@
 /** Home countries + languages for passport, vacations, and immersion. */
 
+import type { AppLocale } from "@/lib/i18n/types";
+
 /** `knowledgeable`: strong passive / school exposure but not fluent (e.g. English in Israel). */
 export type LanguageLevel =
   | "native"
@@ -34,6 +36,64 @@ export const LANGUAGE_NAMES: Record<string, string> = {
   no: "Norwegian",
   el: "Greek",
   he: "Hebrew",
+};
+
+/** UI labels when `AppLocale` is Hebrew (ids match `HOME_COUNTRIES` / language codes). */
+const COUNTRY_NAMES_HE: Record<string, string> = {
+  us: "ארצות הברית",
+  ca: "קנדה",
+  mx: "מקסיקו",
+  jm: "ג׳מייקה",
+  bs: "איי בהאמה",
+  gb: "בריטניה",
+  ie: "אירלנד",
+  il: "ישראל",
+  fr: "צרפת",
+  de: "גרמניה",
+  es: "ספרד",
+  it: "איטליה",
+  pt: "פורטוגל",
+  nl: "הולנד",
+  pl: "פולין",
+  in: "הודו",
+  cn: "סין",
+  jp: "יפן",
+  kr: "דרום קוריאה",
+  au: "אוסטרליה",
+  nz: "ניו זילנד",
+  br: "ברזיל",
+  ar: "ארגנטינה",
+  za: "דרום אפריקה",
+  ng: "ניגריה",
+  ph: "הפיליפינים",
+  eg: "מצרים",
+  se: "שוודיה",
+  no: "נורווגיה",
+  gr: "יוון",
+  tr: "טורקיה",
+  ru: "רוסיה",
+};
+
+const LANGUAGE_NAMES_HE: Record<string, string> = {
+  en: "אנגלית",
+  es: "ספרדית",
+  fr: "צרפתית",
+  de: "גרמנית",
+  it: "איטלקית",
+  pt: "פורטוגזית",
+  nl: "הולנדית",
+  pl: "פולנית",
+  hi: "הינדי",
+  zh: "סינית מנדרינית",
+  ja: "יפנית",
+  ko: "קוריאנית",
+  ar: "ערבית",
+  ru: "רוסית",
+  tr: "טורקית",
+  sv: "שוודית",
+  no: "נורווגית",
+  el: "יוונית",
+  he: "עברית",
 };
 
 export const HOME_COUNTRIES: CountryDef[] = [
@@ -86,8 +146,16 @@ export function getCountryDef(id: string): CountryDef | undefined {
   return COUNTRY_BY_ID.get(id);
 }
 
-export function countryDisplayName(id: string): string {
-  return getCountryDef(id)?.name ?? id.toUpperCase();
+export function countryDisplayName(
+  id: string,
+  locale: AppLocale = "en",
+): string {
+  const key = id.trim().toLowerCase();
+  const def = getCountryDef(key);
+  if (locale === "he") {
+    return COUNTRY_NAMES_HE[key] ?? def?.name ?? id.toUpperCase();
+  }
+  return def?.name ?? id.toUpperCase();
 }
 
 /** ISO 3166-1 alpha-2 id (e.g. us, gb) → regional indicator flag emoji. */
@@ -105,10 +173,15 @@ export function countryIdToFlagEmoji(countryId: string): string {
 /** Current residence: no fixed country (vans, hostels, short lets). */
 export const RESIDENCE_NOMAD_ID = "nomad";
 
-export function residenceDisplayLabel(residenceId: string): string {
+export function residenceDisplayLabel(
+  residenceId: string,
+  locale: AppLocale = "en",
+): string {
   const id = residenceId.trim().toLowerCase();
-  if (id === RESIDENCE_NOMAD_ID) return "Nomad";
-  return countryDisplayName(id);
+  if (id === RESIDENCE_NOMAD_ID) {
+    return locale === "he" ? "נווד" : "Nomad";
+  }
+  return countryDisplayName(id, locale);
 }
 
 export function residenceFlagEmoji(residenceId: string): string {
@@ -126,7 +199,13 @@ export function countryImmersionLang(countryId: string): string {
   return countryPrimaryLang(countryId);
 }
 
-export function languageDisplayName(code: string): string {
+export function languageDisplayName(
+  code: string,
+  locale: AppLocale = "en",
+): string {
+  if (locale === "he") {
+    return LANGUAGE_NAMES_HE[code] ?? LANGUAGE_NAMES[code] ?? code;
+  }
   return LANGUAGE_NAMES[code] ?? code;
 }
 

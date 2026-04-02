@@ -5,11 +5,11 @@ import type { Sex } from "react-nice-avatar";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import {
   niceConfigFromSetup,
-  SETUP_HAIR_COLOR_LABELS,
   SETUP_HAIR_STYLE_COUNT,
   setupHairStyleShowsHairColor,
   type SetupShirtColor,
 } from "@/lib/game/avatar-nice";
+import { useLocale } from "@/lib/i18n/context";
 import type { AvatarLook, CharacterSetupPayload } from "@/lib/game/types";
 import {
   countryDisplayName,
@@ -32,6 +32,7 @@ export function CharacterSetupPanel({
   disabled,
   standalone = false,
 }: CharacterSetupPanelProps) {
+  const { t, locale } = useLocale();
   const [name, setName] = useState("");
   const [skinTone, setSkinTone] = useState(0);
   const [sex, setSex] = useState<Sex>("man");
@@ -59,6 +60,13 @@ export function CharacterSetupPanel({
 
   const hairColorApplies = setupHairStyleShowsHairColor(sex, hairStyleSlot);
 
+  const hairColorOptions = [
+    { value: 0, label: t("hair.black") },
+    { value: 1, label: t("hair.brown") },
+    { value: 2, label: t("hair.blonde") },
+    { value: 3, label: t("hair.ginger") },
+  ];
+
   const onPickSex = (v: Sex) => {
     setSex(v);
     setHairStyleSlot(0);
@@ -77,7 +85,7 @@ export function CharacterSetupPanel({
           htmlFor="char-name"
           className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
         >
-          Name
+          {t("char.nameLabel")}
         </label>
         <input
           id="char-name"
@@ -85,7 +93,7 @@ export function CharacterSetupPanel({
           maxLength={40}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Nickname, hero name, whatever fits"
+          placeholder={t("char.namePlaceholder")}
           autoComplete="off"
           className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base text-zinc-900 shadow-sm outline-none ring-violet-400/30 placeholder:text-zinc-400 focus:border-violet-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
         />
@@ -96,15 +104,16 @@ export function CharacterSetupPanel({
           htmlFor="char-home-country"
           className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
         >
-          Where you&apos;re from
+          {t("char.homeCountry")}
         </label>
         <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          Sets your native language (
-          {languageDisplayName(
-            HOME_COUNTRIES.find((c) => c.id === homeCountryId)?.primaryLang ??
-              "en",
-          )}
-          ). You can learn more later in the story.
+          {t("char.homeCountryHint", {
+            lang: languageDisplayName(
+              HOME_COUNTRIES.find((c) => c.id === homeCountryId)?.primaryLang ??
+                "en",
+              locale,
+            ),
+          })}
         </p>
         <select
           id="char-home-country"
@@ -114,7 +123,7 @@ export function CharacterSetupPanel({
         >
           {HOME_COUNTRIES.map((c) => (
             <option key={c.id} value={c.id}>
-              {c.name}
+              {countryDisplayName(c.id, locale)}
             </option>
           ))}
         </select>
@@ -122,7 +131,7 @@ export function CharacterSetupPanel({
 
       <div className="rounded-2xl border border-zinc-200/80 bg-white/60 p-4 dark:border-zinc-700 dark:bg-zinc-900/50">
         <p className="text-center text-xs font-medium uppercase tracking-wide text-zinc-500">
-          Look · preview at age {PREVIEW_AGE}
+          {t("char.lookPreview", { age: PREVIEW_AGE })}
         </p>
         <div className="mt-3 flex items-center justify-center gap-2 sm:gap-3">
           <CharacterAvatar
@@ -133,48 +142,48 @@ export function CharacterSetupPanel({
           />
           <span
             className="select-none text-4xl leading-none drop-shadow-sm sm:text-5xl"
-            title={countryDisplayName(homeCountryId)}
+            title={countryDisplayName(homeCountryId, locale)}
             role="img"
-            aria-label={`${countryDisplayName(homeCountryId)} flag`}
+            aria-label={`${countryDisplayName(homeCountryId, locale)} flag`}
           >
             {countryIdToFlagEmoji(homeCountryId)}
           </span>
         </div>
         <p className="mt-2 text-center text-xs text-zinc-500">
-          Pick a preview — you&apos;ll age up in the story.
+          {t("char.previewHint")}
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <OptionPickRow
-            label="Gender"
+            label={t("char.gender")}
             options={[
-              { value: "woman", label: "Girl" },
-              { value: "man", label: "Boy" },
+              { value: "woman", label: t("char.girl") },
+              { value: "man", label: t("char.boy") },
             ]}
             current={sex}
             onPick={onPickSex}
           />
           <OptionRow
-            label="Skin"
+            label={t("char.skin")}
             count={4}
             value={skinTone}
             onChange={setSkinTone}
           />
           <OptionPickRow
-            label="Shirt color"
+            label={t("char.shirtColor")}
             options={[
               {
                 value: "pink",
-                label: "Pink",
+                label: t("shirt.pink"),
                 swatchClass: "bg-pink-500",
               },
               {
                 value: "blue",
-                label: "Blue",
+                label: t("shirt.blue"),
                 swatchClass: "bg-blue-600",
               },
               {
                 value: "orange",
-                label: "Orange",
+                label: t("shirt.orange"),
                 swatchClass: "bg-orange-500",
               },
             ]}
@@ -185,18 +194,15 @@ export function CharacterSetupPanel({
 
         <div className="mt-4 space-y-4">
           <OptionRow
-            label="Hair style"
+            label={t("char.hairStyle")}
             count={SETUP_HAIR_STYLE_COUNT}
             value={hairStyleSlot}
             onChange={setHairStyleSlot}
           />
           {hairColorApplies ? (
             <OptionPickRow
-              label="Hair color"
-              options={SETUP_HAIR_COLOR_LABELS.map((label, i) => ({
-                value: i,
-                label,
-              }))}
+              label={t("char.hairColor")}
+              options={hairColorOptions}
               current={hairColorSlot}
               onPick={setHairColorSlot}
             />
@@ -208,7 +214,7 @@ export function CharacterSetupPanel({
         type="button"
         disabled={disabled}
         onClick={() => {
-          onBegin(name.trim() || "Traveler", {
+          onBegin(name.trim() || t("char.defaultName"), {
             avatar: avatarSlice,
             avatarNice: niceConfigFromSetup(avatarSlice, sex, { shirt }),
             homeCountryId,
@@ -216,7 +222,7 @@ export function CharacterSetupPanel({
         }}
         className="w-full rounded-full bg-violet-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-500 disabled:opacity-50"
       >
-        Begin your story
+        {t("char.begin")}
       </button>
     </div>
   );

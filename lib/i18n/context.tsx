@@ -1,0 +1,89 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { localizedAchievement } from "@/lib/i18n/achievement";
+import type { AppLocale } from "@/lib/i18n/types";
+import { LOCALE_STORAGE_KEY } from "@/lib/i18n/types";
+import { interpolate, uiString } from "@/lib/i18n/ui";
+
+type LocaleContextValue = {
+  locale: AppLocale;
+  setLocale: (l: AppLocale) => void;
+  t: (key: string, vars?: Record<string, string | number>) => string;
+  achievement: (id: string) => { title: string; description: string };
+  numberLocale: string;
+};
+
+const LocaleContext = createContext<LocaleContextValue | null>(null);
+
+export function LocaleProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocaleState] = useState<AppLocale>("en");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      try {
+        const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+        if (stored === "he" || stored === "en") setLocaleState(stored);
+      } catch {
+        /* ignore */
+      }
+      setReady(true);
+    });
+  }, []);
+
+  const setLocale = useCallback((l: AppLocale) => {
+    setLocaleState(l);
+    try {
+      localStorage.setItem(LOCALE_STORAGE_KEY, l);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    document.documentElement.lang = locale === "he" ? "he" : "en";
+    document.documentElement.dir = locale === "he" ? "rtl" : "ltr";
+  }, [locale, ready]);
+
+  const t = useCallback(
+    (key: string, vars?: Record<string, string | number>) => {
+      const raw = uiString(locale, key) ?? key;
+      return interpolate(raw, vars);
+    },
+    [locale],
+  );
+
+  const achievement = useCallback(
+    (id: string) => localizedAchievement(locale, id),
+    [locale],
+  );
+
+  const numberLocale = locale === "he" ? "he-IL" : "en-US";
+
+  const value = useMemo(
+    () => ({ locale, setLocale, t, achievement, numberLocale }),
+    [locale, setLocale, t, achievement, numberLocale],
+  );
+
+  return (
+    <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
+  );
+}
+
+export function useLocale(): LocaleContextValue {
+  const ctx = useContext(LocaleContext);
+  if (!ctx) {
+    throw new Error("useLocale must be used within LocaleProvider");
+  }
+  return ctx;
+}

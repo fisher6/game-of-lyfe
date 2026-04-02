@@ -23,6 +23,13 @@ import {
   RESIDENCE_NOMAD_ID,
 } from "./world";
 import { annualDeathProbabilityFromState } from "./mortality";
+import type { AppLocale } from "@/lib/i18n/types";
+import {
+  localizeLifeNode,
+  localizedChoiceLabel,
+  localizedNodeTitleForLog,
+  syntheticLifeLogStrings,
+} from "./story-localize";
 
 const MIN_STAT = 0;
 const MAX_STAT = 100;
@@ -73,7 +80,11 @@ const ADMIN_SKIP_MAX_STEPS = 140;
  * Demo/admin: randomly pick among visible choices until in-game age rises by
  * `yearBudget`, the run ends, or a step cap is hit. Not deterministic.
  */
-export function adminSkipYears(state: GameState, yearBudget: number): GameState {
+export function adminSkipYears(
+  state: GameState,
+  yearBudget: number,
+  locale: AppLocale = "en",
+): GameState {
   if (yearBudget <= 0) return unlockAchievements(state);
   if (state.gamePhase === "dead") return state;
   const targetAge = state.age + yearBudget;
@@ -87,7 +98,7 @@ export function adminSkipYears(state: GameState, yearBudget: number): GameState 
     const visible = getVisibleChoices(s, n);
     if (visible.length === 0) break;
     const pick = visible[Math.floor(Math.random() * visible.length)]!;
-    s = applyChoice(s, pick.index);
+    s = applyChoice(s, pick.index, locale);
   }
   return unlockAchievements(s);
 }
@@ -101,46 +112,60 @@ export type LifeSuccessBreakdown = {
   familyAndLongevity: number;
 };
 
+/** Tier band for life-success score — localize in UI via i18n. */
+export type LifeSuccessTierKey =
+  | "extraordinary"
+  | "remarkable"
+  | "solid"
+  | "mixed"
+  | "hard"
+  | "complicated";
+
 export type LifeSuccessResult = {
   score: number;
-  tier: string;
+  tierKey: LifeSuccessTierKey;
   breakdown: LifeSuccessBreakdown;
 };
 
-/** Readable family / relationships from story flags (narrative summary). */
-export function describeLifeFamilySummary(state: GameState): string[] {
-  const lines: string[] = [];
+/** Structured family / relationship summary — localize labels in UI. */
+export type FamilySummaryLine =
+  | { type: "partner" }
+  | { type: "kids"; count: number }
+  | { type: "kids_vague" }
+  | { type: "grandkids"; count: number }
+  | { type: "no_kids_path" }
+  | { type: "caregiving_parent" }
+  | { type: "estranged" }
+  | { type: "family_focus" }
+  | { type: "empty" };
+
+export function getFamilySummaryLines(state: GameState): FamilySummaryLine[] {
+  const lines: FamilySummaryLine[] = [];
   if (state.flags.includes("has_partner")) {
-    lines.push("Partner or spouse");
+    lines.push({ type: "partner" });
   }
   if (state.kidsCount > 0) {
-    lines.push(
-      state.kidsCount === 1 ? "1 child" : `${state.kidsCount} children`,
-    );
+    lines.push({ type: "kids", count: state.kidsCount });
   } else if (state.flags.includes("has_kids")) {
-    lines.push("Children in the picture");
+    lines.push({ type: "kids_vague" });
   }
   if (state.grandkidsCount > 0) {
-    lines.push(
-      state.grandkidsCount === 1
-        ? "1 grandchild"
-        : `${state.grandkidsCount} grandchildren`,
-    );
+    lines.push({ type: "grandkids", count: state.grandkidsCount });
   }
   if (state.flags.includes("no_kids") && state.kidsCount === 0) {
-    lines.push("Path leaned away from raising kids in this story");
+    lines.push({ type: "no_kids_path" });
   }
   if (state.flags.includes("caregiving_parent")) {
-    lines.push("Cared for an aging parent");
+    lines.push({ type: "caregiving_parent" });
   }
   if (state.flags.includes("estranged_family")) {
-    lines.push("Some family strain or distance");
+    lines.push({ type: "estranged" });
   }
   if (state.flags.includes("family_focus")) {
-    lines.push("Prioritized home and stability");
+    lines.push({ type: "family_focus" });
   }
   if (lines.length === 0) {
-    lines.push("Fewer family milestones recorded — many paths stay private.");
+    lines.push({ type: "empty" });
   }
   return lines;
 }
@@ -203,16 +228,16 @@ export function computeLifeSuccessScore(state: GameState): LifeSuccessResult {
     100,
   );
 
-  let tier = "A complicated path";
-  if (score >= 86) tier = "An extraordinary life";
-  else if (score >= 72) tier = "A remarkable run";
-  else if (score >= 58) tier = "A solid story";
-  else if (score >= 44) tier = "A mixed ledger";
-  else if (score >= 28) tier = "A hard road";
+  let tierKey: LifeSuccessTierKey = "complicated";
+  if (score >= 86) tierKey = "extraordinary";
+  else if (score >= 72) tierKey = "remarkable";
+  else if (score >= 58) tierKey = "solid";
+  else if (score >= 44) tierKey = "mixed";
+  else if (score >= 28) tierKey = "hard";
 
   return {
     score,
-    tier,
+    tierKey,
     breakdown: {
       happiness,
       health,
@@ -317,7 +342,7 @@ function targetBmiFromHealth(
   const h = clamp(health, 15, 100);
   const center = 21.4 + (h - 72) * 0.065;
   const nature = clamp(physiqueNature, -1.5, 1.5);
-  let bmi = center + nature * 2.35 + lifestyleBmiOffset(flags);
+  const bmi = center + nature * 2.35 + lifestyleBmiOffset(flags);
   return clamp(bmi, 16.2, 33);
 }
 
@@ -649,7 +674,7 @@ function applyDelta(state: GameState, d: StatDelta | undefined): GameState {
     countriesVisited = [...set];
   }
 
-  let visitPlacesByCountry = { ...state.visitPlacesByCountry };
+  const visitPlacesByCountry = { ...state.visitPlacesByCountry };
   for (const row of d.visitPlacesAdd ?? []) {
     const id = String(row.countryId).slice(0, 8);
     const n = Math.max(0, Math.min(99, Math.floor(Number(row.places))));
@@ -657,7 +682,7 @@ function applyDelta(state: GameState, d: StatDelta | undefined): GameState {
     visitPlacesByCountry[id] = (visitPlacesByCountry[id] ?? 0) + n;
   }
 
-  let languageLevels = { ...state.languageLevels };
+  const languageLevels = { ...state.languageLevels };
   for (const row of d.languageLevelsSet ?? []) {
     const code = String(row.code).slice(0, 12);
     if (!code) continue;
@@ -737,7 +762,10 @@ function initialRegionalConflictNextEventAge(homeCountryId: string): number {
   return Math.min(95, 11 + Math.floor(Math.random() * 9));
 }
 
-function applyRegionalConflictPulseIfDue(state: GameState): GameState {
+function applyRegionalConflictPulseIfDue(
+  state: GameState,
+  locale: AppLocale,
+): GameState {
   const country = exposureCountryForConflict(state);
   if (!isRegionalConflictProneCountry(country)) return state;
   if (state.age < state.regionalConflictNextEventAge) return state;
@@ -749,6 +777,7 @@ function applyRegionalConflictPulseIfDue(state: GameState): GameState {
     socialSkill: -3,
   });
   const gap = 5 + Math.floor(Math.random() * 6);
+  const syn = syntheticLifeLogStrings("regional_conflict", locale);
   next = {
     ...next,
     regionalConflictNextEventAge: Math.min(120, next.age + gap),
@@ -758,9 +787,8 @@ function applyRegionalConflictPulseIfDue(state: GameState): GameState {
       {
         age: next.age,
         nodeId: "regional_conflict",
-        nodeTitle: "Regional conflict",
-        choiceLabel:
-          "War, riots, or occupation fear surges where you're living — stress you never signed up for.",
+        nodeTitle: syn.nodeTitle,
+        choiceLabel: syn.choiceLabel,
       },
     ].slice(-25),
   };
@@ -770,6 +798,7 @@ function applyRegionalConflictPulseIfDue(state: GameState): GameState {
 function applyMilitaryInjuryRecoveryIfDue(
   state: GameState,
   nodeId: string,
+  locale: AppLocale,
 ): GameState {
   if (nodeId !== "year_19") return state;
   if (!state.flags.includes("military_service_injury")) return state;
@@ -779,6 +808,7 @@ function applyMilitaryInjuryRecoveryIfDue(
     happiness: 14,
     socialSkill: 2,
   });
+  const syn = syntheticLifeLogStrings("military_rehab", locale);
   next = {
     ...next,
     flags: mergeFlags(next.flags, ["military_injury_recovered"]),
@@ -787,9 +817,8 @@ function applyMilitaryInjuryRecoveryIfDue(
       {
         age: next.age,
         nodeId: "military_service",
-        nodeTitle: "Rehab and adjustment",
-        choiceLabel:
-          "Body and mood climb back — not the same as before, but you're still here.",
+        nodeTitle: syn.nodeTitle,
+        choiceLabel: syn.choiceLabel,
       },
     ].slice(-25),
   };
@@ -800,6 +829,7 @@ function applyMilitaryInjuryRecoveryIfDue(
 function applyMilitaryServiceOutcomes(
   state: GameState,
   choiceId: string,
+  locale: AppLocale,
 ): GameState {
   if (choiceId !== "year_18_military_service") return state;
   const r = Math.random();
@@ -817,6 +847,7 @@ function applyMilitaryServiceOutcomes(
       intelligence: -3,
       socialSkill: -4,
     });
+    const syn = syntheticLifeLogStrings("military_injury", locale);
     next = {
       ...next,
       flags: mergeFlags(stripAthleteTrack(next.flags), [
@@ -828,9 +859,8 @@ function applyMilitaryServiceOutcomes(
         {
           age: next.age,
           nodeId: "military_service",
-          nodeTitle: "Service injury",
-          choiceLabel:
-            "Serious injury in service — rehab, trauma, pro-sports dreams out of reach.",
+          nodeTitle: syn.nodeTitle,
+          choiceLabel: syn.choiceLabel,
         },
       ].slice(-25),
     };
@@ -965,6 +995,7 @@ export function completeCharacterSetup(
     avatarNice: StoredNiceAvatarConfig;
     homeCountryId: string;
   },
+  locale: AppLocale = "en",
 ): GameState {
   const characterName = opts.characterName.trim().slice(0, 40) || "Traveler";
   const avatar = normalizeAvatar(opts.avatar);
@@ -1009,7 +1040,7 @@ export function completeCharacterSetup(
     heightInches,
     weightLbs,
   };
-  return applyOnEnterIfNeeded(next);
+  return applyOnEnterIfNeeded(next, locale);
 }
 
 /** Israeli characters: English rises with serious school study; otherwise stays “knowledgeable”. */
@@ -1138,7 +1169,10 @@ export function isAtTerminal(state: GameState): boolean {
   return visible.every((v) => v.choice.nextNodeId === null);
 }
 
-export function applyOnEnterIfNeeded(state: GameState): GameState {
+export function applyOnEnterIfNeeded(
+  state: GameState,
+  locale: AppLocale = "en",
+): GameState {
   const node = getNode(state.currentNodeId);
   if (!node) return state;
 
@@ -1158,13 +1192,17 @@ export function applyOnEnterIfNeeded(state: GameState): GameState {
     next = applyParentStipend(next);
   }
 
-  next = applyMilitaryInjuryRecoveryIfDue(next, node.id);
-  next = applyRegionalConflictPulseIfDue(next);
+  next = applyMilitaryInjuryRecoveryIfDue(next, node.id, locale);
+  next = applyRegionalConflictPulseIfDue(next, locale);
 
   return resolveFatalHealth(clampMinorFinances(next));
 }
 
-export function applyChoice(state: GameState, choiceIndex: number): GameState {
+export function applyChoice(
+  state: GameState,
+  choiceIndex: number,
+  locale: AppLocale = "en",
+): GameState {
   const node = getNode(state.currentNodeId);
   if (!node) throw new Error(`Unknown node: ${state.currentNodeId}`);
   const choice = node.choices[choiceIndex];
@@ -1175,8 +1213,18 @@ export function applyChoice(state: GameState, choiceIndex: number): GameState {
   const logEntry: LifeLogEntry = {
     age: state.age,
     nodeId: node.id,
-    nodeTitle: (node.title ?? node.id).slice(0, 80),
-    choiceLabel: choice.label.slice(0, 200),
+    nodeTitle: localizedNodeTitleForLog(
+      node.id,
+      node.title,
+      node.id,
+      locale,
+    ).slice(0, 80),
+    choiceLabel: localizedChoiceLabel(
+      node.id,
+      choice.id,
+      choice.label,
+      locale,
+    ).slice(0, 200),
   };
   const lifeLog =
     node.id === "character_setup"
@@ -1193,7 +1241,7 @@ export function applyChoice(state: GameState, choiceIndex: number): GameState {
   };
   next = applyDelta(next, choice.deltas);
   next = applyIsraelEnglishSchoolTrack(next, choice.id);
-  next = applyMilitaryServiceOutcomes(next, choice.id);
+  next = applyMilitaryServiceOutcomes(next, choice.id, locale);
 
   if (next.health <= 0) {
     return resolveFatalHealth(next);
@@ -1207,7 +1255,7 @@ export function applyChoice(state: GameState, choiceIndex: number): GameState {
   }
 
   next = { ...next, currentNodeId: choice.nextNodeId };
-  next = applyOnEnterIfNeeded(next);
+  next = applyOnEnterIfNeeded(next, locale);
   return unlockAchievements(next);
 }
 
@@ -1256,8 +1304,9 @@ export function diffStatSnapshot(
 export function applyChoiceWithPreview(
   state: GameState,
   choiceIndex: number,
+  locale: AppLocale = "en",
 ): { next: GameState; diff: StatDiffSummary } {
-  const next = applyChoice(state, choiceIndex);
+  const next = applyChoice(state, choiceIndex, locale);
   return { next, diff: diffStatSnapshot(state, next) };
 }
 
@@ -1686,7 +1735,7 @@ export function validateStateShape(data: unknown): GameState | null {
       : "Undecided";
 
   const homeValue = typeof o.homeValue === "number" ? o.homeValue : 0;
-  let homeLabel =
+  const homeLabel =
     typeof o.homeLabel === "string" && o.homeLabel.trim().length > 0
       ? o.homeLabel
       : "Parents' house";
@@ -1880,8 +1929,13 @@ export function validateStateShape(data: unknown): GameState | null {
   return clampMinorFinances(unlockAchievements(patchLegacyDefaults(parsed)));
 }
 
-export function getVisibleNode(state: GameState) {
-  return getNode(state.currentNodeId);
+export function getVisibleNode(
+  state: GameState,
+  locale: AppLocale = "en",
+): LifeNode | undefined {
+  const n = getNode(state.currentNodeId);
+  if (!n) return undefined;
+  return localizeLifeNode(n, locale);
 }
 
 export { getContent, getNode, CONTENT_VERSION };

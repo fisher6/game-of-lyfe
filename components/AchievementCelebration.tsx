@@ -6,6 +6,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import { useLocale } from "@/lib/i18n/context";
 
 const HERO_EMOJI = ["🏆", "🎉", "✨", "⭐", "🎊", "💫", "🔥"] as const;
 const FLOAT_EMOJI = ["✨", "⭐", "·", "✦", "＊"] as const;
@@ -31,9 +32,10 @@ export function AchievementCelebration({
   splashKey,
   message,
 }: AchievementCelebrationProps) {
+  const { t } = useLocale();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    queueMicrotask(() => setMounted(true));
   }, []);
 
   const hero = useMemo(() => {
@@ -76,7 +78,10 @@ export function AchievementCelebration({
       aria-live="polite"
       aria-atomic="true"
     >
-      <span className="sr-only">Achievement unlocked: {message}</span>
+      <span className="sr-only">
+        {t("splash.srOnly")}
+        {message}
+      </span>
 
       {confetti.map((c) => (
         <span
@@ -122,13 +127,13 @@ export function AchievementCelebration({
               {hero}
             </div>
             <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600 dark:text-violet-300">
-              Achievement unlocked
+              {t("splash.title")}
             </p>
             <p className="mt-2 text-base font-semibold leading-snug text-zinc-900 dark:text-zinc-50 sm:text-lg">
               {message}
             </p>
             <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-              Nice work — keep going.
+              {t("splash.keepGoing")}
             </p>
           </div>
         </div>

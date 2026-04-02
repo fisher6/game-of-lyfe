@@ -11,7 +11,8 @@ import type { CharacterSetupPayload, GameState } from "@/lib/game/types";
 import { StatFloatEffects } from "@/components/StatFloatEffects";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { CharacterSetupPanel } from "@/components/CharacterSetupPanel";
-import { getAchievementMeta } from "@/lib/game/achievements";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLocale } from "@/lib/i18n/context";
 import {
   adminSkipYears,
   applyChoiceWithPreview,
@@ -31,15 +32,19 @@ type GameShellProps = {
   initialState: GameState;
 };
 
-/** Dev server always shows “Skip ~10 yrs”. Deployed builds need `NEXT_PUBLIC_GAME_ADMIN_TOOLS=1`. */
-const showAdminTools =
-  process.env.NEXT_PUBLIC_GAME_ADMIN_TOOLS === "1" ||
-  process.env.NODE_ENV === "development";
+/** “Skip ~10 yrs” only for character names `admin` (any case) or `מנהל`. */
+function canShowAdminSkip(characterName: string): boolean {
+  const n = characterName.trim();
+  if (!n) return false;
+  if (n.toLowerCase() === "admin") return true;
+  return n === "מנהל";
+}
 
 export function GameShell({ initialState }: GameShellProps) {
+  const { t, achievement, locale } = useLocale();
   const [state, setState] = useState<GameState>(initialState);
   const [saving, setSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<"save" | "reset" | null>(null);
   const [statFx, setStatFx] = useState<StatDiffSummary | null>(null);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
   const [setupExiting, setSetupExiting] = useState(false);
@@ -52,7 +57,7 @@ export function GameShell({ initialState }: GameShellProps) {
   const achievementBootRef = useRef(true);
   const prevAchievementLenRef = useRef(0);
 
-  const node = getVisibleNode(state);
+  const node = getVisibleNode(state, locale);
   const terminal = isAtTerminal(state);
   const visibleChoices =
     node && !terminal ? getVisibleChoices(state, node) : [];
@@ -68,7 +73,7 @@ export function GameShell({ initialState }: GameShellProps) {
       setSaving(true);
       setSaveError(null);
       void saveGame(state)
-        .catch(() => setSaveError("Could not save. Check your connection."))
+        .catch(() => setSaveError("save"))
         .finally(() => setSaving(false));
     }, 500);
     return () => window.clearTimeout(id);
@@ -85,32 +90,35 @@ export function GameShell({ initialState }: GameShellProps) {
     prevAchievementLenRef.current = now;
     if (now > prev) {
       const added = state.achievementIds.slice(prev);
-      const titles = added.map((id) => getAchievementMeta(id).title);
+      const titles = added.map((id) => achievement(id).title);
       setAchievementSplash({
         message: titles.join(" · "),
         key: Date.now(),
       });
-      const t = window.setTimeout(() => setAchievementSplash(null), 5600);
-      return () => window.clearTimeout(t);
+      const timer = window.setTimeout(() => setAchievementSplash(null), 5600);
+      return () => window.clearTimeout(timer);
     }
-  }, [state.achievementIds]);
+  }, [state.achievementIds, achievement]);
 
-  const onChoose = useCallback((index: number) => {
-    setState((s) => {
-      const { next, diff } = applyChoiceWithPreview(s, index);
-      queueMicrotask(() => setStatFx(diff));
-      return next;
-    });
-  }, []);
+  const onChoose = useCallback(
+    (index: number) => {
+      setState((s) => {
+        const { next, diff } = applyChoiceWithPreview(s, index, locale);
+        queueMicrotask(() => setStatFx(diff));
+        return next;
+      });
+    },
+    [locale],
+  );
 
   const onAdminSkip10 = useCallback(() => {
     setState((s) => {
       const before = s;
-      const next = adminSkipYears(s, 10);
+      const next = adminSkipYears(s, 10, locale);
       queueMicrotask(() => setStatFx(diffStatSnapshot(before, next)));
       return next;
     });
-  }, []);
+  }, [locale]);
 
   const performRestart = useCallback(() => {
     void (async () => {
@@ -122,7 +130,7 @@ export function GameShell({ initialState }: GameShellProps) {
         setMainAnimatingIn(false);
         setState(createInitialState());
       } catch {
-        setSaveError("Could not reset.");
+        setSaveError("reset");
       }
     })();
   }, []);
@@ -133,19 +141,23 @@ export function GameShell({ initialState }: GameShellProps) {
       setSetupExiting(true);
       window.setTimeout(() => {
         setState((s) =>
-          completeCharacterSetup(s, {
-            characterName: name,
-            avatar: payload.avatar,
-            avatarNice: payload.avatarNice,
-            homeCountryId: payload.homeCountryId,
-          }),
+          completeCharacterSetup(
+            s,
+            {
+              characterName: name,
+              avatar: payload.avatar,
+              avatarNice: payload.avatarNice,
+              homeCountryId: payload.homeCountryId,
+            },
+            locale,
+          ),
         );
         setSetupExiting(false);
         setMainAnimatingIn(true);
         window.setTimeout(() => setMainAnimatingIn(false), 480);
       }, 300);
     },
-    [saving],
+    [saving, locale],
   );
 
   useEffect(() => {
@@ -175,7 +187,7 @@ export function GameShell({ initialState }: GameShellProps) {
             id="restart-confirm-title"
             className="text-center text-base font-semibold leading-snug text-red-600 dark:text-red-400"
           >
-            Are you sure? Your whole progress will be deleted.
+            {t("restart.title")}
           </h2>
           <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <button
@@ -183,7 +195,7 @@ export function GameShell({ initialState }: GameShellProps) {
               onClick={() => setRestartConfirmOpen(false)}
               className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-600"
             >
-              Cancel
+              {t("restart.cancel")}
             </button>
             <button
               type="button"
@@ -191,7 +203,7 @@ export function GameShell({ initialState }: GameShellProps) {
               disabled={saving}
               className="rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 disabled:opacity-50"
             >
-              Restart game
+              {t("restart.confirm")}
             </button>
           </div>
         </div>
@@ -202,13 +214,13 @@ export function GameShell({ initialState }: GameShellProps) {
     return (
       <>
         <div className="mx-auto max-w-lg px-4 py-16 text-center">
-          <p className="text-zinc-600 dark:text-zinc-400">Something went wrong.</p>
+          <p className="text-zinc-600 dark:text-zinc-400">{t("error.wrong")}</p>
           <button
             type="button"
             onClick={() => setRestartConfirmOpen(true)}
             className="mt-4 rounded-full bg-zinc-900 px-5 py-2 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900"
           >
-            Start over
+            {t("wrong.startOver")}
           </button>
         </div>
         {restartModal}
@@ -228,18 +240,21 @@ export function GameShell({ initialState }: GameShellProps) {
             <div className="flex items-center gap-2">
               <AppLogo size={40} title="" />
               <span className="text-sm font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
-                Game of Lyfe
+                {t("brand.shortTitle")}
               </span>
             </div>
-            <button
-              type="button"
-              onClick={() =>
-                signOut({ callbackUrl: "/" })
-              }
-              className="shrink-0 rounded-full border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-600"
-            >
-              Sign out
-            </button>
+            <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+              <LanguageSwitcher />
+              <button
+                type="button"
+                onClick={() =>
+                  signOut({ callbackUrl: "/" })
+                }
+                className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-600"
+              >
+                {t("nav.signOut")}
+              </button>
+            </div>
           </div>
           {node.title ? (
             <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 sm:text-2xl">
@@ -274,18 +289,21 @@ export function GameShell({ initialState }: GameShellProps) {
           >
             <AppLogo size={36} title="" />
             <span className="text-sm font-semibold tracking-tight">
-              Game of Lyfe
+              {t("brand.shortTitle")}
             </span>
           </Link>
           {saving && (
-            <span className="text-xs text-zinc-400">Saving…</span>
+            <span className="text-xs text-zinc-400">{t("nav.saving")}</span>
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {showAdminTools && !terminal && state.gamePhase === "living" ? (
+          <LanguageSwitcher />
+          {canShowAdminSkip(state.characterName) &&
+          !terminal &&
+          state.gamePhase === "living" ? (
             <button
               type="button"
-              title="Demo only: auto-pick random choices until about 10 more years pass"
+              title={t("nav.skip10Title")}
               onClick={() => {
                 if (saving) return;
                 onAdminSkip10();
@@ -293,7 +311,7 @@ export function GameShell({ initialState }: GameShellProps) {
               disabled={saving}
               className="rounded-full border border-amber-500/80 bg-amber-50 px-4 py-1.5 text-sm font-medium text-amber-950 hover:bg-amber-100 disabled:opacity-50 dark:border-amber-600/80 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/60"
             >
-              Skip ~10 yrs
+              {t("nav.skip10")}
             </button>
           ) : null}
           <button
@@ -301,7 +319,7 @@ export function GameShell({ initialState }: GameShellProps) {
             onClick={() => setRestartConfirmOpen(true)}
             className="rounded-full border border-zinc-300 px-4 py-1.5 text-sm dark:border-zinc-600"
           >
-            Restart
+            {t("nav.restart")}
           </button>
           <button
             type="button"
@@ -310,7 +328,7 @@ export function GameShell({ initialState }: GameShellProps) {
             }
             className="rounded-full border border-zinc-300 px-4 py-1.5 text-sm dark:border-zinc-600"
           >
-            Sign out
+            {t("nav.signOut")}
           </button>
         </div>
       </header>
@@ -326,7 +344,7 @@ export function GameShell({ initialState }: GameShellProps) {
           />
           {saveError && (
             <p className="mt-4 text-center text-sm text-rose-600 dark:text-rose-400">
-              {saveError}
+              {t(`error.${saveError}`)}
             </p>
           )}
         </>
@@ -368,7 +386,7 @@ export function GameShell({ initialState }: GameShellProps) {
 
           {saveError && (
             <p className="mt-4 text-center text-sm text-rose-600 dark:text-rose-400">
-              {saveError}
+              {t(`error.${saveError}`)}
             </p>
           )}
 
@@ -394,7 +412,7 @@ export function GameShell({ initialState }: GameShellProps) {
                     disabled={saving}
                     className="rounded-full bg-violet-600 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-violet-500 disabled:opacity-50"
                   >
-                    Play again
+                    {t("playAgain")}
                   </button>
                 </div>
               </div>

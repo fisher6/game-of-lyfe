@@ -3,7 +3,12 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { ACHIEVEMENTS, getAchievementMeta } from "@/lib/game/achievements";
+import { ACHIEVEMENTS } from "@/lib/game/achievements";
+import { useLocale } from "@/lib/i18n/context";
+import {
+  displayHomeLabel,
+  displayNorthStar,
+} from "@/lib/i18n/state-display-he";
 import { computeBmi } from "@/lib/game/engine";
 import type {
   AvatarLook,
@@ -19,6 +24,7 @@ import {
   languageDisplayName,
 } from "@/lib/game/world";
 import { LegacyTrackingPanel } from "@/components/LegacyTrackingPanel";
+import type { AppLocale } from "@/lib/i18n/types";
 
 const LEGACY_TRACKING_MIN_AGE = 65;
 
@@ -57,13 +63,6 @@ type StatBarsProps = {
   choicePanel?: ReactNode;
 };
 
-function levelLabel(l: LanguageLevel): string {
-  if (l === "native") return "Native";
-  if (l === "proficient") return "Proficient";
-  if (l === "knowledgeable") return "Knowledgeable";
-  return "Basic";
-}
-
 function formatHeightFtIn(inches: number): string {
   const total = Math.round(inches * 2) / 2;
   const ft = Math.floor(total / 12);
@@ -80,6 +79,34 @@ function formatHeightMetric(inches: number): string {
 function formatWeightMetric(lbs: number): string {
   const kg = Math.round((lbs / 2.20462262) * 10) / 10;
   return `${kg} kg`;
+}
+
+function formatDisplayHeight(
+  inches: number,
+  locale: AppLocale,
+  t: (key: string) => string,
+): string {
+  if (locale === "he") {
+    const m = inches * 0.0254;
+    return `${m.toFixed(2)} ${t("life.unitMeter")}`;
+  }
+  return `${formatHeightFtIn(inches)} (${formatHeightMetric(inches)})`;
+}
+
+function formatDisplayWeight(
+  lbs: number,
+  locale: AppLocale,
+  t: (key: string) => string,
+): string {
+  if (locale === "he") {
+    const kg = lbs / 2.20462262;
+    const rounded = Math.round(kg * 10) / 10;
+    const str = Number.isInteger(rounded)
+      ? `${rounded}`
+      : rounded.toFixed(1);
+    return `${str} ${t("life.unitKg")}`;
+  }
+  return `${lbs.toFixed(1)} ${t("life.lb")} (${formatWeightMetric(lbs)})`;
 }
 
 function Bar({
@@ -157,8 +184,16 @@ export function StatBars({
   grandkidsCount,
   choicePanel,
 }: StatBarsProps) {
+  const { t, achievement, numberLocale, locale } = useLocale();
   const [lifeTab, setLifeTab] = useState<LifePanelTab>("summary");
   const displayName = characterName.trim() || "…";
+
+  function levelLabel(l: LanguageLevel): string {
+    if (l === "native") return t("level.native");
+    if (l === "proficient") return t("level.proficient");
+    if (l === "knowledgeable") return t("level.knowledgeable");
+    return t("level.basic");
+  }
   const netWorth = assets - debt;
   const recentChoices = [...lifeLog].reverse().slice(0, 16);
   const physiqueRef = { heightInches, weightLbs, age } as GameState;
@@ -200,9 +235,11 @@ export function StatBars({
             />
             <span
               className="select-none text-3xl leading-none drop-shadow-sm"
-              title={residenceDisplayLabel(residenceCountryId)}
+              title={residenceDisplayLabel(residenceCountryId, locale)}
               role="img"
-              aria-label={`Based in: ${residenceDisplayLabel(residenceCountryId)}`}
+              aria-label={t("life.flagAria", {
+                place: residenceDisplayLabel(residenceCountryId, locale),
+              })}
             >
               {residenceFlagEmoji(residenceCountryId)}
             </span>
@@ -212,57 +249,48 @@ export function StatBars({
           </p>
           {residenceCountryId !== homeCountryId ? (
             <p className="mt-1 max-w-full text-center text-[10px] text-zinc-500 dark:text-zinc-400 sm:text-left">
-              Based in{" "}
-              <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                {residenceDisplayLabel(residenceCountryId)}
-              </span>
+              {t("life.basedIn", {
+                place: residenceDisplayLabel(residenceCountryId, locale),
+              })}
             </p>
           ) : null}
         </div>
         <div>
-          <p className="text-xs text-zinc-500">Age</p>
+          <p className="text-xs text-zinc-500">{t("life.age")}</p>
           <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
             {age}
           </p>
         </div>
         <div className="rounded-lg border border-zinc-200/60 bg-zinc-50/40 px-2 py-1.5 dark:border-zinc-700/60 dark:bg-zinc-900/30">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
-            Build
+            {t("life.build")}
           </p>
           <dl className="mt-1 space-y-0.5 text-[11px] tabular-nums text-zinc-800 dark:text-zinc-200">
             <div className="flex justify-between gap-2">
-              <dt className="text-zinc-500">Height</dt>
+              <dt className="text-zinc-500">{t("life.height")}</dt>
               <dd className="max-w-[68%] text-right font-medium leading-snug">
-                {formatHeightFtIn(heightInches)}
-                <span className="font-normal text-zinc-500 dark:text-zinc-400">
-                  {" "}
-                  ({formatHeightMetric(heightInches)})
-                </span>
+                {formatDisplayHeight(heightInches, locale, t)}
               </dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-zinc-500">Weight</dt>
+              <dt className="text-zinc-500">{t("life.weight")}</dt>
               <dd className="max-w-[68%] text-right font-medium leading-snug">
-                {weightLbs.toFixed(1)} lb
-                <span className="font-normal text-zinc-500 dark:text-zinc-400">
-                  {" "}
-                  ({formatWeightMetric(weightLbs)})
-                </span>
+                {formatDisplayWeight(weightLbs, locale, t)}
               </dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-zinc-500">BMI</dt>
+              <dt className="text-zinc-500">{t("life.bmi")}</dt>
               <dd className="font-medium">{bmi.toFixed(1)}</dd>
             </div>
           </dl>
           <p className="mt-1 text-[9px] leading-snug text-zinc-500 dark:text-zinc-400">
-            Build still nudges some money outcomes (height / BMI).
+            {t("life.buildHint")}
           </p>
         </div>
         <div className="min-w-0">
-          <p className="text-xs text-zinc-500">Assets</p>
+          <p className="text-xs text-zinc-500">{t("life.assets")}</p>
           <p className="truncate text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
-            ${assets.toLocaleString("en-US")}
+            ${assets.toLocaleString(numberLocale)}
           </p>
         </div>
       </div>
@@ -270,26 +298,28 @@ export function StatBars({
       <div className="flex min-w-0 flex-col gap-2.5 sm:gap-3">
         {debt > 0 ? (
           <div className="min-w-0">
-            <p className="text-xs text-zinc-500">Debt</p>
+            <p className="text-xs text-zinc-500">{t("life.debt")}</p>
             <p className="truncate text-lg font-semibold tabular-nums text-rose-600 dark:text-rose-400">
-              ${debt.toLocaleString("en-US")}
+              ${debt.toLocaleString(numberLocale)}
             </p>
           </div>
         ) : null}
         <div className="min-w-0">
-          <p className="text-xs text-zinc-500">Net worth</p>
+          <p className="text-xs text-zinc-500">{t("life.netWorth")}</p>
           <p className="truncate text-sm font-semibold tabular-nums text-zinc-800 dark:text-zinc-200">
-            ${netWorth.toLocaleString("en-US")}
+            ${netWorth.toLocaleString(numberLocale)}
           </p>
         </div>
         <div className="min-w-0 border-t border-zinc-200/70 pt-2 dark:border-zinc-700/80">
-          <p className="text-xs text-zinc-500">Home</p>
+          <p className="text-xs text-zinc-500">{t("life.home")}</p>
           <p className="line-clamp-2 text-xs font-semibold leading-snug text-zinc-900 dark:text-zinc-50">
-            {homeLabel}
+            {displayHomeLabel(homeLabel, locale)}
           </p>
           {homeValue > 0 ? (
             <p className="mt-1 text-[10px] tabular-nums text-zinc-500 dark:text-zinc-400">
-              Est. value ${homeValue.toLocaleString("en-US")}
+              {t("life.estValue", {
+                v: homeValue.toLocaleString(numberLocale),
+              })}
             </p>
           ) : null}
           {(flags.includes("has_partner") ||
@@ -299,24 +329,26 @@ export function StatBars({
             <dl className="mt-2 space-y-1 border-t border-zinc-200/60 pt-2 text-[10px] dark:border-zinc-700/60">
               {flags.includes("has_partner") ? (
                 <div className="flex justify-between gap-2">
-                  <dt className="shrink-0 text-zinc-500">Partner</dt>
+                  <dt className="shrink-0 text-zinc-500">{t("life.partner")}</dt>
                   <dd className="text-right font-medium text-zinc-800 dark:text-zinc-200">
-                    Married
+                    {t("life.married")}
                   </dd>
                 </div>
               ) : null}
               {(kidsCount > 0 || flags.includes("has_kids")) &&
               !(flags.includes("no_kids") && kidsCount === 0) ? (
                 <div className="flex justify-between gap-2">
-                  <dt className="shrink-0 text-zinc-500">Kids</dt>
+                  <dt className="shrink-0 text-zinc-500">{t("life.kids")}</dt>
                   <dd className="tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
-                    {kidsCount > 0 ? kidsCount : "—"}
+                    {kidsCount > 0 ? kidsCount : t("life.dash")}
                   </dd>
                 </div>
               ) : null}
               {grandkidsCount > 0 ? (
                 <div className="flex justify-between gap-2">
-                  <dt className="shrink-0 text-zinc-500">Grandkids</dt>
+                  <dt className="shrink-0 text-zinc-500">
+                    {t("life.grandkids")}
+                  </dt>
                   <dd className="tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
                     {grandkidsCount}
                   </dd>
@@ -327,18 +359,18 @@ export function StatBars({
         </div>
         <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-wide text-zinc-500">
-            Projected
+            {t("life.projected")}
           </p>
           <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-            {northStar}
+            {displayNorthStar(northStar, locale)}
           </p>
         </div>
         <div className="min-w-0 rounded-lg border border-sky-200/70 bg-sky-50/40 px-2 py-1.5 dark:border-sky-900/40 dark:bg-sky-950/25">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-300">
-            From
+            {t("life.from")}
           </p>
           <p className="mt-0.5 text-xs font-medium text-zinc-800 dark:text-zinc-200">
-            {countryDisplayName(homeCountryId)}
+            {countryDisplayName(homeCountryId, locale)}
           </p>
         </div>
       </div>
@@ -349,11 +381,11 @@ export function StatBars({
     <div className="max-h-[min(24rem,50vh)] space-y-4 overflow-y-auto pr-1 sm:max-h-[min(28rem,55vh)]">
       <section>
         <p className="text-[10px] font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-200">
-          Passport stamps
+          {t("life.passport")}
         </p>
         {countriesVisited.length === 0 ? (
           <p className="mt-1.5 text-[10px] text-zinc-500 dark:text-zinc-400">
-            No countries logged yet — vacations add stamps here.
+            {t("life.passportEmpty")}
           </p>
         ) : (
           <ul className="mt-1.5 flex flex-wrap gap-1">
@@ -362,7 +394,7 @@ export function StatBars({
                 key={cid}
                 className="rounded-md border border-emerald-200/80 bg-white/80 px-1.5 py-0.5 text-[9px] font-medium text-emerald-900 dark:border-emerald-800/60 dark:bg-zinc-900/60 dark:text-emerald-100"
               >
-                {countryDisplayName(cid)}
+                {countryDisplayName(cid, locale)}
               </li>
             ))}
           </ul>
@@ -370,17 +402,20 @@ export function StatBars({
       </section>
       <section className="border-t border-zinc-200/70 pt-3 dark:border-zinc-700/80">
         <p className="text-[10px] font-semibold uppercase tracking-wide text-indigo-800 dark:text-indigo-200">
-          Languages
+          {t("life.languages")}
         </p>
         <ul className="mt-1.5 space-y-1 text-[10px] text-zinc-700 dark:text-zinc-300">
           {Object.entries(languageLevels)
             .sort(([a], [b]) =>
-              languageDisplayName(a).localeCompare(languageDisplayName(b)),
+              languageDisplayName(a, locale).localeCompare(
+                languageDisplayName(b, locale),
+                locale === "he" ? "he" : "en",
+              ),
             )
             .map(([code, lvl]) => (
               <li key={code} className="leading-snug">
                 <span className="font-medium text-indigo-900 dark:text-indigo-100">
-                  {languageDisplayName(code)}
+                  {languageDisplayName(code, locale)}
                 </span>
                 <span className="text-zinc-500"> · </span>
                 <span className="text-zinc-600 dark:text-zinc-400">
@@ -392,18 +427,21 @@ export function StatBars({
       </section>
       <section className="border-t border-zinc-200/70 pt-3 dark:border-zinc-700/80">
         <p className="text-[10px] font-semibold uppercase tracking-wide text-violet-700 dark:text-violet-300">
-          Unlocked ({achievementIds.length}/{ACHIEVEMENTS.length})
+          {t("life.unlockedFull", {
+            a: achievementIds.length,
+            b: ACHIEVEMENTS.length,
+          })}
         </p>
         {achievementIds.length === 0 ? (
           <p className="mt-1.5 text-[10px] text-zinc-400">
-            Play to unlock milestones.
+            {t("life.playUnlock")}
           </p>
         ) : (
           <ul className="mt-1.5 space-y-1 text-[10px] text-zinc-700 dark:text-zinc-300">
             {achievementIds.map((id) => (
               <li key={id} className="leading-snug">
                 <span className="font-medium text-violet-800 dark:text-violet-200">
-                  {getAchievementMeta(id).title}
+                  {achievement(id).title}
                 </span>
               </li>
             ))}
@@ -416,16 +454,16 @@ export function StatBars({
   const recentPanel = (
     <div className="max-h-[min(24rem,50vh)] overflow-y-auto pr-1 sm:max-h-[min(28rem,55vh)]">
       <p className="text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
-        Logged choices ({lifeLog.length})
+        {t("life.recentLogTitle", { n: lifeLog.length })}
       </p>
       {recentChoices.length === 0 ? (
-        <p className="mt-2 text-[10px] text-zinc-400">Nothing logged yet.</p>
+        <p className="mt-2 text-[10px] text-zinc-400">{t("life.recentEmpty")}</p>
       ) : (
         <ul className="mt-2 space-y-2 text-[10px] leading-snug text-zinc-600 dark:text-zinc-400">
           {recentChoices.map((e, i) => (
             <li key={`${e.nodeId}-${e.age}-${i}`}>
               <span className="font-semibold text-zinc-700 dark:text-zinc-300">
-                Age {e.age}
+                {t("life.recentAge", { age: e.age })}
               </span>
               {e.nodeTitle ? (
                 <span className="block text-[9px] text-zinc-500">
@@ -447,16 +485,16 @@ export function StatBars({
       <div className="w-full min-w-0 rounded-2xl border border-zinc-200/80 bg-white/80 p-3 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/80 sm:p-4">
         <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-            Life
+            {t("life.panel")}
           </p>
           <div
             className="flex flex-wrap gap-1"
             role="tablist"
-            aria-label="Life panel sections"
+            aria-label={t("life.ariaTabs")}
           >
-            {lifeTabBtn("summary", "Summary")}
-            {lifeTabBtn("achievements", "Achievements")}
-            {lifeTabBtn("recent", "Recent choices")}
+            {lifeTabBtn("summary", t("life.tab.summary"))}
+            {lifeTabBtn("achievements", t("life.tab.achievements"))}
+            {lifeTabBtn("recent", t("life.tab.recent"))}
           </div>
         </div>
 
@@ -492,20 +530,25 @@ export function StatBars({
       <div className="flex min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/90 sm:flex-row sm:items-stretch">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col p-4 sm:p-5">
           <p className="mb-3 shrink-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-            Vitals
+            {t("life.vitals")}
           </p>
           <div className="grid grid-cols-1 gap-3 sm:gap-4">
-            <Bar label="Health" value={health} max={100} tone="emerald" />
-            <Bar label="Happiness" value={happiness} max={100} tone="amber" />
+            <Bar label={t("stat.health")} value={health} max={100} tone="emerald" />
             <Bar
-              label="Intelligence"
+              label={t("stat.happiness")}
+              value={happiness}
+              max={100}
+              tone="amber"
+            />
+            <Bar
+              label={t("stat.intelligence")}
               value={intelligence}
               max={100}
               tone="violet"
             />
-            <Bar label="Social" value={socialSkill} max={100} tone="cyan" />
+            <Bar label={t("stat.social")} value={socialSkill} max={100} tone="cyan" />
             <Bar
-              label="Romantic"
+              label={t("stat.romantic")}
               value={romanticSkill}
               max={100}
               tone="rose"
@@ -523,7 +566,7 @@ export function StatBars({
         </div>
         <div className="flex min-h-0 w-full shrink-0 flex-col border-t border-zinc-200/70 bg-zinc-50/50 dark:border-zinc-700/80 dark:bg-zinc-900/40 sm:w-44 sm:max-w-[11rem] sm:border-l sm:border-t-0">
           <p className="shrink-0 border-b border-zinc-200/60 px-3 py-2 text-[10px] font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-700/60">
-            Last change
+            {t("life.lastChange")}
           </p>
           <div className="flex min-h-[10rem] flex-1 flex-col overflow-y-auto overflow-x-hidden p-2 sm:min-h-0">
             {choicePanel}

@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/lib/i18n/context";
+
 function LegacyBar({
   label,
   value,
@@ -59,32 +61,38 @@ export function LegacyTrackingPanel({
   lifetimeDonatedTotal,
   className = "mt-4",
 }: LegacyTrackingPanelProps) {
+  const { t, numberLocale } = useLocale();
   return (
     <div
       className={`rounded-xl border border-amber-200/80 bg-amber-50/50 p-3 dark:border-amber-900/40 dark:bg-amber-950/25 ${className}`}
     >
       <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-200/90">
-        Legacy
+        {t("legacy.title")}
       </p>
       <p className="mb-3 text-[11px] font-medium leading-snug text-amber-950/90 dark:text-amber-100/85">
-        We now can track your legacy!
+        {t("legacy.intro")}
       </p>
       <div className="grid grid-cols-1 gap-3">
         <LegacyBar
-          label="Family harmony"
+          label={t("legacy.familyHarmony")}
           value={legacyFamilyHarmony}
           max={100}
           tone="amber"
         />
-        <LegacyBar label="Repute" value={legacyRepute} max={100} tone="violet" />
         <LegacyBar
-          label="Generosity"
+          label={t("stat.repute")}
+          value={legacyRepute}
+          max={100}
+          tone="violet"
+        />
+        <LegacyBar
+          label={t("stat.generosity")}
           value={legacyGenerosity}
           max={100}
           tone="emerald"
         />
         <LegacyBar
-          label="Heir readiness"
+          label={t("stat.heirReadiness")}
           value={legacyHeirReadiness}
           max={100}
           tone="cyan"
@@ -92,8 +100,9 @@ export function LegacyTrackingPanel({
       </div>
       {lifetimeDonatedTotal > 0 ? (
         <p className="mt-3 text-xs tabular-nums text-amber-900/80 dark:text-amber-100/70">
-          Lifetime gifts tracked: $
-          {lifetimeDonatedTotal.toLocaleString("en-US")}
+          {t("legacy.lifetimeGifts", {
+            v: lifetimeDonatedTotal.toLocaleString(numberLocale),
+          })}
         </p>
       ) : null}
     </div>

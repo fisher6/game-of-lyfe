@@ -17,9 +17,10 @@ Add these in the Vercel project **Settings → Environment Variables** (Producti
 | `AUTH_GOOGLE_ID` | Google Cloud OAuth **Client ID** (Web application). |
 | `AUTH_GOOGLE_SECRET` | Google Cloud **Client secret**. |
 | `AUTH_URL` | **Recommended on Vercel.** Canonical public site URL with **no trailing slash**, e.g. `https://game-of-lyfe.vercel.app`. Avoids OAuth redirect surprises on previews vs production. |
-| `NEXT_PUBLIC_GAME_ADMIN_TOOLS` | Optional. Set to `1` to show the **Skip ~10 yrs** demo button on `/play`. Omit on production unless you want that exposed. Local dev shows it automatically. |
 
 Copy [.env.example](.env.example) for local development.
+
+The **Skip ~10 yrs** demo control on `/play` appears only when the in-game character name is `admin` (any case) or `מנהל`.
 
 ## Supabase database URL
 

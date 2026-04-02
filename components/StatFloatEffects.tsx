@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { StatDiffSummary } from "@/lib/game/engine";
+import { useLocale } from "@/lib/i18n/context";
+import type { AppLocale } from "@/lib/i18n/types";
 
 type BurstItem = {
   key: string;
@@ -17,42 +19,63 @@ function formatSigned(n: number): string {
   return n > 0 ? `+${n}` : `${n}`;
 }
 
-function formatAssetsDelta(n: number): string {
-  const abs = Math.abs(n).toLocaleString("en-US");
+function formatAssetsDelta(n: number, locale: string): string {
+  const abs = Math.abs(n).toLocaleString(locale);
   return n > 0 ? `+$${abs}` : `-$${abs}`;
 }
 
-function buildBurst(diff: StatDiffSummary): BurstItem[] {
+function buildBurst(
+  diff: StatDiffSummary,
+  t: (k: string) => string,
+  numberLocale: string,
+  locale: AppLocale,
+): BurstItem[] {
   const items: BurstItem[] = [];
 
   if (diff.age !== 0) {
     items.push({
       key: "age",
       emoji: diff.age > 0 ? "🎂" : "⏪",
-      name: "Age",
+      name: t("stat.age"),
       formatted: formatSigned(diff.age),
       delta: diff.age,
       accent: "zinc",
     });
   }
   if (Math.abs(diff.heightInches) >= 0.05) {
-    const n = Math.round(diff.heightInches * 10) / 10;
+    let formatted: string;
+    if (locale === "he") {
+      const dCm = diff.heightInches * 2.54;
+      const n = Math.round(dCm * 10) / 10;
+      formatted = `${n > 0 ? "+" : ""}${n.toFixed(1)} ${t("stat.cmAbbr")}`;
+    } else {
+      const n = Math.round(diff.heightInches * 10) / 10;
+      formatted = `${n > 0 ? "+" : ""}${n.toFixed(1)} ${t("stat.inAbbr")}`;
+    }
     items.push({
       key: "height",
       emoji: diff.heightInches > 0 ? "📏" : "📐",
-      name: "Height",
-      formatted: `${n > 0 ? "+" : ""}${n.toFixed(1)} in`,
+      name: t("stat.height"),
+      formatted,
       delta: diff.heightInches,
       accent: "zinc",
     });
   }
   if (Math.abs(diff.weightLbs) >= 0.05) {
-    const n = Math.round(diff.weightLbs * 10) / 10;
+    let formatted: string;
+    if (locale === "he") {
+      const dKg = diff.weightLbs / 2.20462262;
+      const n = Math.round(dKg * 10) / 10;
+      formatted = `${n > 0 ? "+" : ""}${n.toFixed(1)} ${t("life.unitKg")}`;
+    } else {
+      const n = Math.round(diff.weightLbs * 10) / 10;
+      formatted = `${n > 0 ? "+" : ""}${n.toFixed(1)} ${t("life.lb")}`;
+    }
     items.push({
       key: "weight",
       emoji: "⚖️",
-      name: "Weight",
-      formatted: `${n > 0 ? "+" : ""}${n.toFixed(1)} lb`,
+      name: t("stat.weight"),
+      formatted,
       delta: diff.weightLbs,
       accent: "zinc",
     });
@@ -61,7 +84,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "health",
       emoji: diff.health > 0 ? "❤️" : "🤒",
-      name: "Health",
+      name: t("stat.health"),
       formatted: formatSigned(diff.health),
       delta: diff.health,
       accent: "emerald",
@@ -71,7 +94,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "happiness",
       emoji: diff.happiness > 0 ? "😊" : "😔",
-      name: "Happiness",
+      name: t("stat.happiness"),
       formatted: formatSigned(diff.happiness),
       delta: diff.happiness,
       accent: "amber",
@@ -81,7 +104,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "intelligence",
       emoji: diff.intelligence > 0 ? "🧠" : "💭",
-      name: "Intelligence",
+      name: t("stat.intelligence"),
       formatted: formatSigned(diff.intelligence),
       delta: diff.intelligence,
       accent: "violet",
@@ -91,7 +114,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "socialSkill",
       emoji: diff.socialSkill > 0 ? "🤝" : "🫥",
-      name: "Social",
+      name: t("stat.social"),
       formatted: formatSigned(diff.socialSkill),
       delta: diff.socialSkill,
       accent: "cyan",
@@ -101,7 +124,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "romanticSkill",
       emoji: diff.romanticSkill > 0 ? "💞" : "💔",
-      name: "Romantic",
+      name: t("stat.romantic"),
       formatted: formatSigned(diff.romanticSkill),
       delta: diff.romanticSkill,
       accent: "rose",
@@ -111,8 +134,8 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "assets",
       emoji: diff.assets > 0 ? "💰" : "💸",
-      name: "Assets",
-      formatted: formatAssetsDelta(diff.assets),
+      name: t("stat.assets"),
+      formatted: formatAssetsDelta(diff.assets, numberLocale),
       delta: diff.assets,
       accent: "sky",
     });
@@ -121,8 +144,8 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "debt",
       emoji: diff.debt > 0 ? "📒" : "📉",
-      name: "Debt",
-      formatted: formatAssetsDelta(diff.debt),
+      name: t("stat.debt"),
+      formatted: formatAssetsDelta(diff.debt, numberLocale),
       delta: diff.debt,
       accent: "rose",
     });
@@ -131,7 +154,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "lf",
       emoji: "🫶",
-      name: "Family legacy",
+      name: t("stat.familyLegacy"),
       formatted: formatSigned(diff.legacyFamilyHarmony),
       delta: diff.legacyFamilyHarmony,
       accent: "amber",
@@ -141,7 +164,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "lr",
       emoji: "✨",
-      name: "Repute",
+      name: t("stat.repute"),
       formatted: formatSigned(diff.legacyRepute),
       delta: diff.legacyRepute,
       accent: "violet",
@@ -151,7 +174,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "lg",
       emoji: "🎁",
-      name: "Generosity",
+      name: t("stat.generosity"),
       formatted: formatSigned(diff.legacyGenerosity),
       delta: diff.legacyGenerosity,
       accent: "emerald",
@@ -161,7 +184,7 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "lhro",
       emoji: "📜",
-      name: "Heir readiness",
+      name: t("stat.heirReadiness"),
       formatted: formatSigned(diff.legacyHeirReadiness),
       delta: diff.legacyHeirReadiness,
       accent: "cyan",
@@ -171,8 +194,8 @@ function buildBurst(diff: StatDiffSummary): BurstItem[] {
     items.push({
       key: "don",
       emoji: "💝",
-      name: "Given (lifetime)",
-      formatted: formatAssetsDelta(diff.lifetimeDonatedTotal),
+      name: t("stat.givenLifetime"),
+      formatted: formatAssetsDelta(diff.lifetimeDonatedTotal, numberLocale),
       delta: diff.lifetimeDonatedTotal,
       accent: "sky",
     });
@@ -206,15 +229,11 @@ type StatFloatEffectsProps = {
 };
 
 export function StatFloatEffects({ diff }: StatFloatEffectsProps) {
-  const [items, setItems] = useState<BurstItem[]>([]);
-
-  useEffect(() => {
-    if (!diff) {
-      setItems([]);
-      return;
-    }
-    setItems(buildBurst(diff));
-  }, [diff]);
+  const { t, numberLocale, locale } = useLocale();
+  const items = useMemo(
+    () => (diff ? buildBurst(diff, t, numberLocale, locale) : []),
+    [diff, t, numberLocale, locale],
+  );
 
   if (items.length === 0) return null;
 
@@ -223,7 +242,7 @@ export function StatFloatEffects({ diff }: StatFloatEffectsProps) {
       className="animate-stat-panel-in pointer-events-none relative z-20 w-full min-w-0"
       role="status"
       aria-live="polite"
-      aria-label="Stat changes from your choice"
+      aria-label={t("statFloat.aria")}
     >
       <ul className="flex flex-col gap-1">
         {items.map((item, i) => (
