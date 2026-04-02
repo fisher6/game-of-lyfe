@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "Game of Lyfe",
   description:
     "A playful life sim: choices, stats, and cloud saves — built with Next.js.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
