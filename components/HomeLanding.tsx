@@ -10,10 +10,10 @@ export function HomeLanding() {
 
   return (
     <div className="relative flex min-h-full flex-1 flex-col items-center justify-center bg-zinc-100 px-6 py-16 dark:bg-zinc-950">
-      <div className="absolute end-4 top-4 sm:end-6 sm:top-6">
-        <LanguageSwitcher />
-      </div>
       <div className="max-w-lg text-center">
+        <div className="mb-8 flex justify-center sm:mb-10">
+          <LanguageSwitcher />
+        </div>
         <div className="flex flex-col items-center gap-5">
           <AppLogo
             size={80}

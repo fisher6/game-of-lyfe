@@ -3,7 +3,7 @@ import type { LanguageLevel } from "./world";
 
 export type { LanguageLevel } from "./world";
 
-export const CONTENT_VERSION = 17;
+export const CONTENT_VERSION = 18;
 
 export type StatDelta = {
   health?: number;

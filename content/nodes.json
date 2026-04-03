@@ -1,5 +1,5 @@
 {
-  "version": 13,
+  "version": 14,
   "nodes": {
     "character_setup": {
       "id": "character_setup",
@@ -849,6 +849,32 @@
             "intelligence": -2,
             "assets": 38
           }
+        },
+        {
+          "id": "year_20_lawyer_grind",
+          "label": "Pre-law grind: brief cases until 2am — outlines sharp, joy thin",
+          "nextNodeId": "year_21",
+          "showForNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 6,
+            "happiness": -5,
+            "health": -4,
+            "socialSkill": 1,
+            "assets": -120
+          }
+        },
+        {
+          "id": "year_20_lawyer_moot",
+          "label": "Mock trial weekend — you love winning the argument more than the trophy",
+          "nextNodeId": "year_21",
+          "showForNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 4,
+            "happiness": 6,
+            "health": -2,
+            "socialSkill": 5,
+            "assets": -55
+          }
         }
       ]
     },
@@ -918,6 +944,32 @@
             "socialSkill": 7,
             "intelligence": -2,
             "assets": 62
+          }
+        },
+        {
+          "id": "year_21_lawyer_clinic",
+          "label": "Legal clinic shift: intake forms break your heart; imposter syndrome is loud",
+          "nextNodeId": "north_star_check_21",
+          "showForNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "happiness": -6,
+            "health": -3,
+            "intelligence": 3,
+            "socialSkill": 6,
+            "assets": -25
+          }
+        },
+        {
+          "id": "year_21_lawyer_firm",
+          "label": "Summer filing gig: brutal hours, tiny paycheck — a partner notices your eye for detail",
+          "nextNodeId": "north_star_check_21",
+          "showForNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "happiness": 4,
+            "health": -5,
+            "intelligence": 4,
+            "socialSkill": 4,
+            "assets": 95
           }
         }
       ]
@@ -1095,6 +1147,32 @@
             "socialSkill": 5,
             "intelligence": -2,
             "assets": 48
+          }
+        },
+        {
+          "id": "year_23_lawyer_ethics",
+          "label": "Ethics module and billable-hour horror stories — you can't unhear them",
+          "nextNodeId": "year_24",
+          "showForNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "happiness": -4,
+            "health": -2,
+            "intelligence": 5,
+            "socialSkill": 2,
+            "assets": -90
+          }
+        },
+        {
+          "id": "year_23_lawyer_motion",
+          "label": "Procedural win on something small — courthouse air, adrenaline, maybe this is the job",
+          "nextNodeId": "year_24",
+          "showForNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "happiness": 11,
+            "health": -2,
+            "intelligence": 3,
+            "socialSkill": 5,
+            "assets": -40
           }
         }
       ]
@@ -2112,6 +2190,17 @@
           }
         },
         {
+          "id": "ns_lawyer",
+          "label": "Lawyer / advocate — stand up for people inside the rules",
+          "nextNodeId": "start_age_8",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 2,
+            "socialSkill": 1,
+            "happiness": -1
+          }
+        },
+        {
           "id": "ns_artist",
           "label": "Artist / creator — make something that lasts",
           "nextNodeId": "start_age_8",
@@ -2226,6 +2315,17 @@
           "setNorthStar": "Artist / creator",
           "deltas": {
             "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_11_lawyer_still",
+          "label": "Still: Lawyer / advocate",
+          "nextNodeId": "age_12_school",
+          "showForNorthStar": "Lawyer / advocate",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 1,
+            "socialSkill": 1
           }
         },
         {
@@ -2356,6 +2456,19 @@
           }
         },
         {
+          "id": "north_star_check_11_lawyer",
+          "label": "Switch: Lawyer / advocate — rules, rhetoric, and long reading lists",
+          "nextNodeId": "age_12_school",
+          "hideForNorthStar": "Lawyer / advocate",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 2,
+            "socialSkill": 1,
+            "happiness": -1,
+            "assets": -30
+          }
+        },
+        {
           "id": "north_star_check_11_unsure",
           "label": "Honestly: still undecided",
           "nextNodeId": "age_12_school",
@@ -2404,6 +2517,18 @@
           "setNorthStar": "Artist / creator",
           "deltas": {
             "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_16_lawyer_still",
+          "label": "Still: Lawyer / advocate",
+          "nextNodeId": "year_17",
+          "showForNorthStar": "Lawyer / advocate",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 1,
+            "socialSkill": 1,
+            "happiness": -1
           }
         },
         {
@@ -2536,6 +2661,19 @@
           }
         },
         {
+          "id": "north_star_check_16_lawyer",
+          "label": "Switch: Lawyer / advocate — exams, clinics, and arguing on purpose",
+          "nextNodeId": "year_17",
+          "hideForNorthStar": "Lawyer / advocate",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 3,
+            "socialSkill": 1,
+            "happiness": -2,
+            "assets": -45
+          }
+        },
+        {
           "id": "north_star_check_16_unsure",
           "label": "Honestly: still undecided",
           "nextNodeId": "year_17",
@@ -2584,6 +2722,18 @@
           "setNorthStar": "Artist / creator",
           "deltas": {
             "happiness": 2
+          }
+        },
+        {
+          "id": "north_star_check_21_lawyer_still",
+          "label": "Still: Lawyer / advocate",
+          "nextNodeId": "invest_young_adult",
+          "showForNorthStar": "Lawyer / advocate",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 2,
+            "socialSkill": 2,
+            "assets": -40
           }
         },
         {
@@ -2715,6 +2865,20 @@
             "intelligence": -2,
             "health": -2,
             "assets": -30
+          }
+        },
+        {
+          "id": "north_star_check_21_lawyer",
+          "label": "Switch: Lawyer / advocate — debt, deadlines, and the rush of being heard",
+          "nextNodeId": "invest_young_adult",
+          "hideForNorthStar": "Lawyer / advocate",
+          "setNorthStar": "Lawyer / advocate",
+          "deltas": {
+            "intelligence": 3,
+            "socialSkill": 2,
+            "happiness": -2,
+            "health": -1,
+            "assets": -80
           }
         },
         {

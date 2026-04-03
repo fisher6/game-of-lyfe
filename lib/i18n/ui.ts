@@ -10,9 +10,14 @@ const EN: Record<string, string> = {
     "Grow up from age eight with health, happiness, and assets on the line. Pick school paths, social media moments, college or work — a small demo you can extend into a full life sim.",
   "home.continue": "Continue your life",
   "home.signInGoogle": "Sign in with Google",
+  "home.playWithoutSignIn": "Play without signing in",
+  "home.guestSaveWarning":
+    "You won't be able to save your progress without signing in.",
   "home.loading": "Loading…",
   "home.signedInAs": "Signed in as {{email}}",
   "nav.saving": "Saving…",
+  "nav.localOnly": "Not signed in — progress won't be saved",
+  "nav.home": "Home",
   "nav.skip10Title":
     "Admin: auto-pick random choices until about 10 more years pass",
   "nav.skip10": "Skip ~10 yrs",
@@ -211,9 +216,14 @@ const HE: Record<string, string> = {
     "גדלו מגיל שמונה עם בריאות, אושר ונכסים על הכף. בחרו מסלולי לימודים, רגעים ברשתות, אוניברסיטה או עבודה — הדגמה קטנה שניתן להרחיב למשחק חיים מלא.",
   "home.continue": "המשיכו את החיים",
   "home.signInGoogle": "התחברות עם Google",
+  "home.playWithoutSignIn": "לשחק בלי להתחבר",
+  "home.guestSaveWarning":
+    "לא תהיה אפשרות לשמור את ההתקדמות בלי להתחבר.",
   "home.loading": "טוען…",
   "home.signedInAs": "מחוברת כ-{{email}}",
   "nav.saving": "שומר…",
+  "nav.localOnly": "לא מחוברות — ההתקדמות לא תישמר",
+  "nav.home": "בית",
   "nav.skip10Title":
     "מצב מנהל: בחירות אקראיות עד כ־10 שנים קדימה",
   "nav.skip10": "דלג ~10 ש׳",

@@ -34,11 +34,14 @@ type GameShellProps = {
   initialState: GameState;
   /** `/play/admin` — skip-years + step undo (same cloud save as `/play`). */
   adminMode?: boolean;
+  /** When false, skips server save/reset (guest play without an account). */
+  canCloudSave?: boolean;
 };
 
 export function GameShell({
   initialState,
   adminMode = false,
+  canCloudSave = true,
 }: GameShellProps) {
   const { t, achievement, locale } = useLocale();
   const [state, setState] = useState<GameState>(initialState);
@@ -78,6 +81,7 @@ export function GameShell({
     state.gamePhase === "dead" || state.currentNodeId === DEATH_NODE_ID;
 
   useEffect(() => {
+    if (!canCloudSave) return;
     if (skipSaveRef.current) {
       skipSaveRef.current = false;
       return;
@@ -90,7 +94,7 @@ export function GameShell({
         .finally(() => setSaving(false));
     }, 500);
     return () => window.clearTimeout(id);
-  }, [state]);
+  }, [state, canCloudSave]);
 
   useEffect(() => {
     if (achievementBootRef.current) {
@@ -273,15 +277,24 @@ export function GameShell({
             </div>
             <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
               <LanguageSwitcher />
-              <button
-                type="button"
-                onClick={() =>
-                  signOut({ callbackUrl: "/" })
-                }
-                className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-600"
-              >
-                {t("nav.signOut")}
-              </button>
+              {canCloudSave ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    signOut({ callbackUrl: "/" })
+                  }
+                  className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-600"
+                >
+                  {t("nav.signOut")}
+                </button>
+              ) : (
+                <Link
+                  href="/"
+                  className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-600"
+                >
+                  {t("nav.home")}
+                </Link>
+              )}
             </div>
           </div>
           {node.title ? (
@@ -320,9 +333,13 @@ export function GameShell({
               {t("brand.shortTitle")}
             </span>
           </Link>
-          {saving && (
+          {canCloudSave && saving ? (
             <span className="text-xs text-zinc-400">{t("nav.saving")}</span>
-          )}
+          ) : !canCloudSave ? (
+            <span className="text-xs text-amber-700 dark:text-amber-400/90">
+              {t("nav.localOnly")}
+            </span>
+          ) : null}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <LanguageSwitcher />
@@ -361,15 +378,24 @@ export function GameShell({
           >
             {t("nav.restart")}
           </button>
-          <button
-            type="button"
-            onClick={() =>
-              signOut({ callbackUrl: "/" })
-            }
-            className="rounded-full border border-zinc-300 px-4 py-1.5 text-sm dark:border-zinc-600"
-          >
-            {t("nav.signOut")}
-          </button>
+          {canCloudSave ? (
+            <button
+              type="button"
+              onClick={() =>
+                signOut({ callbackUrl: "/" })
+              }
+              className="rounded-full border border-zinc-300 px-4 py-1.5 text-sm dark:border-zinc-600"
+            >
+              {t("nav.signOut")}
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="rounded-full border border-zinc-300 px-4 py-1.5 text-sm dark:border-zinc-600"
+            >
+              {t("nav.home")}
+            </Link>
+          )}
         </div>
       </header>
 

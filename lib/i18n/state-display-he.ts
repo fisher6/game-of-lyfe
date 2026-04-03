@@ -4,6 +4,7 @@ import type { AppLocale } from "@/lib/i18n/types";
 const NORTH_STAR_HE: Record<string, string> = {
   "Engineer / builder": "מהנדסת / בונה",
   "Doctor / healer": "רופאה / מרפאה",
+  "Lawyer / advocate": "עורכת דין / סנגורית",
   "Artist / creator": "אמנית / יוצרת",
   "Social media creator": "יוצרת תוכן ברשת",
   Entrepreneur: "יזמית",

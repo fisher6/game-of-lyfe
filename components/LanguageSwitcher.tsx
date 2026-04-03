@@ -19,6 +19,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   return (
     <div
       className={className}
+      dir="ltr"
       role="group"
       aria-label={t("lang.switchLabel")}
     >

@@ -35,7 +35,7 @@ export async function loadGame(): Promise<GameState> {
 export async function saveGame(state: GameState): Promise<void> {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error("Unauthorized");
+    return;
   }
 
   await prisma.gameSave.upsert({
@@ -51,7 +51,7 @@ export async function saveGame(state: GameState): Promise<void> {
 export async function resetGame(): Promise<void> {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error("Unauthorized");
+    return;
   }
 
   await prisma.gameSave.deleteMany({

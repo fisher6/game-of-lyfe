@@ -1078,6 +1078,12 @@ function applyIsraelEnglishSchoolTrack(
     "year_20_lang_studio",
     "year_20_social_flop",
     "year_20_social_hit",
+    "year_20_lawyer_grind",
+    "year_20_lawyer_moot",
+    "year_21_lawyer_clinic",
+    "year_21_lawyer_firm",
+    "year_23_lawyer_ethics",
+    "year_23_lawyer_motion",
   ]);
   if (prof.has(choiceId)) {
     return {
